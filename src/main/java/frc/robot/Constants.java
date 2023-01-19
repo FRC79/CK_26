@@ -23,8 +23,7 @@ public final class Constants {
     public static final int BR_MOTOR_PORT = 3;
   }
 
-
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int DRIVER = 0;
   }
 }
