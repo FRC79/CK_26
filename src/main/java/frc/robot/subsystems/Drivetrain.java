@@ -12,6 +12,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.Constants.DriveConstants;
 
+// gyro lib
+import com.kauailabs.navx.frc.AHRS;
+
+// SP interface for gyro
+import edu.wpi.first.wpilibj.SPI;
+
+
+
 public class Drivetrain extends SubsystemBase {
 
   /*Left Motors*/
@@ -24,6 +32,14 @@ public class Drivetrain extends SubsystemBase {
 
 
   private final MecanumDrive m_robotDrive = new MecanumDrive(frontLeftMotor,backLeftMotor,frontRightMotor,backRightMotor);
+
+  /* gyro */
+  public final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+  // values for testing gyro 
+  double angle;
+  double altitude;
+  double heading;
 
   /** Creates a new MecanumDrive. */
   public Drivetrain() {
@@ -39,5 +55,10 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    angle = gyro.getAngle();
+    altitude = gyro.getAltitude();
+    heading = gyro.getCompassHeading();
+    
   }
 }
