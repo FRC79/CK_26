@@ -6,7 +6,8 @@ public class BridgeBalancer {
     private float angle_last;
     private float m_acceleration_mps2;
     private int s_last;
-    private boolean boarded = false;
+    private float y_power;
+    private boolean boarded;
     // Fully Carpet(FC), Boarding(BD), Falling Backwards(FB), Bridge Falling(BF),
     // Engaging(E), Balance(B)
     // Plus: Front of ramp
@@ -28,114 +29,133 @@ public class BridgeBalancer {
     }
 
     // State functions
-    public void NextStateFCPLUS(){
-        if (Math.abs(m_angle_radians - angle_last) >= 1){
+    private void NextStateFCPLUS() {
+        if (Math.abs(m_angle_radians - angle_last) >= 1) {
             s_last = STATE_BD_PLUS;
-        }
-        else {
+        } else {
             s_last = STATE_FC_PLUS;
         }
     }
 
-    public void NextStateBDPLUS(){
+    private void NextStateBDPLUS() {
 
-        if (m_acceleration_mps2 > 0 && m_deriv_angle_radians < 0 ){
+        if (m_acceleration_mps2 > 0 && m_deriv_angle_radians < 0) {
             s_last = STATE_BF_PLUS;
-        }
-        else if (m_acceleration_mps2 < 0){
+        } else if (m_acceleration_mps2 < 0) {
             s_last = STATE_FB_PLUS;
-        }
-        else {
+        } else {
             s_last = STATE_BD_PLUS;
         }
     }
 
-    public void NextStateFBPLUS(){
-        if (Math.abs(m_angle_radians-0) <= 1) {
+    private void NextStateFBPLUS() {
+        if (Math.abs(m_angle_radians - 0) <= 1) {
             s_last = STATE_FC_PLUS;
-        }
-        else if (m_acceleration_mps2 > 0){
+        } else if (m_acceleration_mps2 > 0) {
             s_last = STATE_BD_PLUS;
-        }
-        else {
+        } else {
             s_last = STATE_FB_PLUS;
         }
     }
 
-    public void NextStateBFPLUS(){
-        if (Math.abs(m_angle_radians-0) <= 1) {
+    private void NextStateBFPLUS() {
+        if (Math.abs(m_angle_radians - 0) <= 1) {
             s_last = STATE_E;
-        }
-        else {
+        } else {
             s_last = STATE_BF_PLUS;
         }
     }
 
-    public void NextStateE(){
-        if (Math.abs(m_angle_radians-0) <= 1 && Math.abs(m_acceleration_mps2-0) <= 1) {
+    private void NextStateE() {
+        if (Math.abs(m_angle_radians - 0) <= 1 && Math.abs(m_acceleration_mps2 - 0) <= 1) {
             s_last = STATE_B;
-        }
-        else if (m_acceleration_mps2 < 0 && m_angle_radians > 0){
+        } else if (m_acceleration_mps2 < 0 && m_angle_radians > 0) {
             s_last = STATE_FB_PLUS;
-        }
-        else if (m_acceleration_mps2 > 0 && m_angle_radians < 0){
+        } else if (m_acceleration_mps2 > 0 && m_angle_radians < 0) {
             s_last = STATE_FB_MINUS;
-        }
-        else {
+        } else {
             s_last = STATE_E;
         }
     }
 
-    public void NextStateB(){
+    private void NextStateB() {
         boarded = true;
     }
 
-    public void NextStateBFMINUS(){
-        if (Math.abs(m_angle_radians-0) <= 1) {
+    private void NextStateBFMINUS() {
+        if (Math.abs(m_angle_radians - 0) <= 1) {
             s_last = STATE_E;
-        }
-        else {
+        } else {
             s_last = STATE_BF_MINUS;
         }
     }
 
-    public void NextStateFBMINUS(){
-        if (Math.abs(m_angle_radians-0) <= 1) {
+    private void NextStateFBMINUS() {
+        if (Math.abs(m_angle_radians - 0) <= 1) {
             s_last = STATE_FC_MINUS;
-        }
-        else if (m_acceleration_mps2 < 0){
+        } else if (m_acceleration_mps2 < 0) {
             s_last = STATE_BD_MINUS;
-        }
-        else {
+        } else {
             s_last = STATE_FB_MINUS;
         }
     }
 
-    public void NextStateBDMINUS(){
-        if (m_acceleration_mps2 < 0 && m_deriv_angle_radians > 0 ){
+    private void NextStateBDMINUS() {
+        if (m_acceleration_mps2 < 0 && m_deriv_angle_radians > 0) {
             s_last = STATE_BF_MINUS;
-        }
-        else if (m_acceleration_mps2 > 0){
+        } else if (m_acceleration_mps2 > 0) {
             s_last = STATE_FB_MINUS;
-        }
-        else {
+        } else {
             s_last = STATE_BD_MINUS;
         }
     }
 
-
-    public void NextStateFCMINUS(){
-        if (Math.abs(m_angle_radians - angle_last) >= 1){
+    private void NextStateFCMINUS() {
+        if (Math.abs(m_angle_radians - angle_last) >= 1) {
             s_last = STATE_BD_MINUS;
-        }
-        else {
+        } else {
             s_last = STATE_FC_MINUS;
         }
     }
 
-
-
-
+    public float GetAction() throws Exception{
+        switch (s_last) {
+            case (STATE_FC_PLUS):
+                y_power = 1.0f;
+                break;
+            case (STATE_BD_PLUS):
+                y_power = 1.0f;
+                break;
+            case (STATE_FB_PLUS):
+                y_power = 1.0f;
+                break;
+            case (STATE_BF_PLUS):
+                y_power = 0.2f;
+                break;
+            case (STATE_E):
+                //PID might go here
+                y_power = 0;
+                break;
+            case (STATE_B):
+                y_power = 0;
+                break;
+            case (STATE_FC_MINUS):
+                y_power = -1.0f;
+                break;
+            case (STATE_BD_MINUS):
+                y_power = -1.0f;
+                break;
+            case (STATE_FB_MINUS):
+                y_power = -1.0f;
+                break;
+            case (STATE_BF_MINUS):
+                y_power = -0.2f;
+                break;
+            default:
+                throw new Exception("We reached an invalid state : " + s_last);
+        }
+        return y_power;
+    }
 
     // Update State functions
     public void UpdateState(float angle, float acceleration) throws Exception {
@@ -174,7 +194,6 @@ public class BridgeBalancer {
                 break;
             default:
                 throw new Exception("We reached an invalid state : " + s_last);
-                break;
         }
     }
 }
