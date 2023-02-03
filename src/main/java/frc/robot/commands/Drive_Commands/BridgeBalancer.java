@@ -16,6 +16,8 @@ public class BridgeBalancer {
     private float MAX_ANGLE_CONSTANT = 90;
 
     private Timer timer;
+
+    public String state;
     
     // Fully Carpet(FC), Boarding(BD), Falling Backwards(FB), Bridge Falling(BF),
     // Engaging(E), Balance(B)
@@ -143,34 +145,44 @@ public class BridgeBalancer {
         switch (s_last) {
             case (STATE_FC_PLUS):
                 y_power = 1.0f;
+                state = "Fully Carpeted +";
                 break;
             case (STATE_BD_PLUS):
                 y_power = 1.0f;
+                state = "Boarding +";
                 break;
             case (STATE_FB_PLUS):
                 y_power = 1.0f;
+                state = "Falling Backwards +";
                 break;
             case (STATE_BF_PLUS):
                 y_power = 0.2f;
+                state = "Bridge Falling +";
                 break;
             case (STATE_E):
                 //PID might go here
                 y_power = 0;
+                state = "Engaging";
                 break;
             case (STATE_B):
                 y_power = 0;
+                state = "Balance";
                 break;
             case (STATE_FC_MINUS):
                 y_power = -1.0f;
+                state = "Fully Carpeted -";
                 break;
             case (STATE_BD_MINUS):
                 y_power = -1.0f;
+                state = "Boarding -";
                 break;
             case (STATE_FB_MINUS):
                 y_power = -1.0f;
+                state = "Falling Backwards -";
                 break;
             case (STATE_BF_MINUS):
                 y_power = -0.2f;
+                state = "Bridge Falling -";
                 break;
             default:
                 throw new Exception("We reached an invalid state: " + s_last);
@@ -191,6 +203,10 @@ public class BridgeBalancer {
         }
         timer.clear();
         return m_deriv_angle_degrees;
+    }
+
+    public String getState(){
+        return state;
     }
 
     // Update State functions

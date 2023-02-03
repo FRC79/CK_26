@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -11,11 +12,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.ToDoubleFunction;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.Drive_Commands.BridgeBalancer;
 import frc.robot.Logger;
 
 // gyro lib
@@ -44,6 +47,8 @@ public class Drivetrain extends SubsystemBase {
 
   private Timer timer;
 
+  private final BridgeBalancer m_BridgeBalancer = new BridgeBalancer();
+
   // values for testing gyro
   float pitch_angle;
   float roll_angle;
@@ -55,6 +60,9 @@ public class Drivetrain extends SubsystemBase {
   float accelY;
   float accelZ;
   float grav = 9.81f;
+  double yStick;
+  double xStick;
+  double zStick;
 
   private Logger logger;
   private Map<String, Float> floatColumns;
@@ -72,6 +80,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void cartesianDrive(double y, double x, double z) {
+    yStick = y;
+    xStick = x;
+    zStick = z;
     m_robotDrive.driveCartesian(y, x, z);
   }
 
@@ -90,25 +101,33 @@ public class Drivetrain extends SubsystemBase {
     accelZ = gyro.getWorldLinearAccelZ() * grav;
 
     if (timer.isReady()) {
-      floatColumns.put("Pitch", pitch_angle);
-      floatColumns.put("Roll", roll_angle);
-      floatColumns.put("Yaw", yaw_angle);
-      floatColumns.put("AccelX", accelX);
-      floatColumns.put("AccelY", accelY);
-      floatColumns.put("AccelZ", accelZ);
-      floatColumns.put("RawAccelX", rawaccelX);
-      floatColumns.put("RawAccelY", rawaccelY);
-      floatColumns.put("RawAccelZ", rawaccelZ);
-      logger.logFloat(floatColumns);
-      floatColumns.clear();
+      // floatColumns.put("Pitch", pitch_angle);
+      // floatColumns.put("Roll", roll_angle);
+      // floatColumns.put("Yaw", yaw_angle);
+      // floatColumns.put("AccelX", accelX);
+      // floatColumns.put("AccelY", accelY);
+      // floatColumns.put("AccelZ", accelZ);
+      // floatColumns.put("RawAccelX", rawaccelX);
+      // floatColumns.put("RawAccelY", rawaccelY);
+      // floatColumns.put("RawAccelZ", rawaccelZ);
+      // logger.logFloat(floatColumns);
+      // floatColumns.clear();
 
-      String gyroData = String.format("Pitch: %f, Roll: %f, Yaw: %f", pitch_angle, roll_angle, yaw_angle);
-      String accelData = String.format("AccelX: %f, AccelY: %f, AccelZ: %f", accelX, accelY, accelZ);
-      String rawaccelData = String.format("RawAccelX: %f, RawAccelY: %f, RawAccelZ: %f", rawaccelX, rawaccelY,
-          rawaccelZ);
-      System.out.println(gyroData);
-      System.out.println(accelData);
-      System.out.println(rawaccelData);
+      // String gyroData = String.format("Pitch: %f, Roll: %f, Yaw: %f", pitch_angle, roll_angle, yaw_angle);
+      // String accelData = String.format("AccelX: %f, AccelY: %f, AccelZ: %f", accelX, accelY, accelZ);
+      // String rawaccelData = String.format("RawAccelX: %f, RawAccelY: %f, RawAccelZ: %f", rawaccelX, rawaccelY,
+      //     rawaccelZ);
+      // System.out.println(gyroData);
+      // System.out.println(accelData);
+      // System.out.println(rawaccelData);
+      
+      double[] stickArray = {yStick, xStick, zStick};
+      SmartDashboard.putNumberArray("Joystick Values", stickArray);
+      String[] gyroArray = {Float.toString(pitch_angle), Float.toString(roll_angle), Float.toString(yaw_angle)};
+      SmartDashboard.putStringArray("Gyro Values", gyroArray);
+      String[] accelArray = {Float.toString(accelY) + " (Raw: " + Float.toString(rawaccelY) + ")", Float.toString(accelX) + " (Raw: " + Float.toString(rawaccelX) + ")", Float.toString(accelZ) + " (Raw: " + Float.toString(rawaccelZ) + ")"};
+      SmartDashboard.putStringArray("Acceleration Values", accelArray);
+      SmartDashboard.putString("State", m_BridgeBalancer.getState());
 
       timer.clear();
     }
