@@ -29,12 +29,12 @@ import frc.robot.Timer;
 public class Drivetrain extends SubsystemBase {
 
   /* Left Motors */
-  private final WPI_VictorSPX frontLeftMotor = new WPI_VictorSPX(DriveConstants.FL_MOTOR_PORT);
+  private final WPI_TalonSRX frontLeftMotor = new WPI_TalonSRX(DriveConstants.FL_MOTOR_PORT);
   private final WPI_TalonSRX backLeftMotor = new WPI_TalonSRX(DriveConstants.BL_MOTOR_PORT);
 
   /* Right Motors */
-  private final WPI_VictorSPX frontRightMotor = new WPI_VictorSPX(DriveConstants.FR_MOTOR_PORT);
-  private final WPI_TalonSRX backRightMotor = new WPI_TalonSRX(DriveConstants.BR_MOTOR_PORT);
+  private final WPI_TalonSRX frontRightMotor = new WPI_TalonSRX(DriveConstants.FR_MOTOR_PORT);
+  private final WPI_VictorSPX backRightMotor = new WPI_VictorSPX(DriveConstants.BR_MOTOR_PORT);
 
   private final MecanumDrive m_robotDrive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor,
       backRightMotor);
@@ -89,6 +89,7 @@ public class Drivetrain extends SubsystemBase {
     accelY = gyro.getWorldLinearAccelY() * grav;
     accelZ = gyro.getWorldLinearAccelZ() * grav;
 
+    /* 
     if (timer.isReady()) {
       floatColumns.put("Pitch", pitch_angle);
       floatColumns.put("Roll", roll_angle);
@@ -112,5 +113,6 @@ public class Drivetrain extends SubsystemBase {
 
       timer.clear();
     }
+    */
   }
 }
