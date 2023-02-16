@@ -5,8 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -17,6 +23,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
+  // The robot's subsystems
+  private final Drivetrain m_Drivetrain = new Drivetrain();
+  private final Arm m_arm = new Arm();
+
+  // The operator's controller 
+  public GenericHID operator = new Joystick(Constants.OperatorConstants.OPERATOR);
 
   public RobotContainer() {
     // Configure the trigger bindings
@@ -34,6 +47,51 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    //Arm Buttons
+    new JoystickButton(operator, OperatorConstants.HIGH_GOAL_BUTTON).onTrue(Commands.runOnce(
+      () -> {
+        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_HIGH_RADS);
+        m_arm.enable();
+      }, 
+      m_arm));
+
+    new JoystickButton(operator, OperatorConstants.MED_GOAL_BUTTON).onTrue(Commands.runOnce(
+      () -> {
+        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_MED_RADS);
+        m_arm.enable();
+      }, 
+      m_arm));
+
+    new JoystickButton(operator, OperatorConstants.LOW_GOAL_BUTTON).onTrue(Commands.runOnce(
+      () -> {
+        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_LOW_RADS);
+        m_arm.enable();
+      }, 
+      m_arm));
+  
+    new JoystickButton(operator, OperatorConstants.PLAYSTATION_BUTTON).onTrue(Commands.runOnce(
+    () -> {
+      m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_PLAYSTATION_RADS);
+      m_arm.enable();
+    }, 
+    m_arm));
+    
+    new JoystickButton(operator, OperatorConstants.GROUND_BUTTON).onTrue(Commands.runOnce(
+      () -> {
+        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_NUETRAL_RADS);
+        m_arm.enable();
+      }, 
+      m_arm));
+    
+    new JoystickButton(operator, OperatorConstants.DISABLE_ARM_BUTTON).onTrue(Commands.runOnce(m_arm::disable));
+
+    new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON)
+    .onTrue(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(0.5)))
+    .onFalse(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(1.0)));
+  }
+
+  public void disablePIDSubsystems() {
+    m_arm.disable();
   }
 
   /**
@@ -41,4 +99,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+
+   public Command getAutonomousCommand() {
+    return Commands.none();
+   }
 }

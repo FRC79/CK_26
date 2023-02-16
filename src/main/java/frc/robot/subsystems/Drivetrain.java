@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.Drive_Commands.BridgeBalancer;
 import frc.robot.Logger;
 
 // gyro lib
@@ -30,7 +31,7 @@ public class Drivetrain extends SubsystemBase {
 
   /* Left Motors */
   private final WPI_TalonSRX frontLeftMotor = new WPI_TalonSRX(DriveConstants.FL_MOTOR_PORT);
-  private final WPI_TalonSRX backLeftMotor = new WPI_TalonSRX(DriveConstants.BL_MOTOR_PORT);
+  private final WPI_VictorSPX backLeftMotor = new WPI_VictorSPX(DriveConstants.BL_MOTOR_PORT);
 
   /* Right Motors */
   private final WPI_TalonSRX frontRightMotor = new WPI_TalonSRX(DriveConstants.FR_MOTOR_PORT);
@@ -59,20 +60,28 @@ public class Drivetrain extends SubsystemBase {
   private Logger logger;
   private Map<String, Float> floatColumns;
 
+  private BridgeBalancer bridgeBalancer;
+
 
   /** Creates a new MecanumDrive. */
   public Drivetrain() {
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
+    m_robotDrive.setDeadband(0.05);
 
     logger = new Logger("gyrotest.csv",
         Arrays.asList("Pitch", "Roll", "Yaw", "AccelX", "AccelY", "AccelZ", "RawAccelX", "RawAccelY", "RayAccelZ"));
     floatColumns = new HashMap<>();
     timer = new Timer(500);
+    bridgeBalancer = new BridgeBalancer();
   }
 
   public void cartesianDrive(double y, double x, double z) {
     m_robotDrive.driveCartesian(y, x, z);
+  }
+
+  public void setMaxOutput(double maxOutput){
+    m_robotDrive.setMaxOutput(maxOutput);
   }
 
   @Override
@@ -88,8 +97,14 @@ public class Drivetrain extends SubsystemBase {
     accelX = gyro.getWorldLinearAccelX() * grav;
     accelY = gyro.getWorldLinearAccelY() * grav;
     accelZ = gyro.getWorldLinearAccelZ() * grav;
-
     /* 
+    try {
+      bridgeBalancer.UpdateState(pitch_angle, accelX);
+    } catch (Exception e) {
+      System.out.println("Woops, bridge code broke");
+    }
+    */
+
     if (timer.isReady()) {
       floatColumns.put("Pitch", pitch_angle);
       floatColumns.put("Roll", roll_angle);
@@ -105,14 +120,12 @@ public class Drivetrain extends SubsystemBase {
 
       String gyroData = String.format("Pitch: %f, Roll: %f, Yaw: %f", pitch_angle, roll_angle, yaw_angle);
       String accelData = String.format("AccelX: %f, AccelY: %f, AccelZ: %f", accelX, accelY, accelZ);
-      String rawaccelData = String.format("RawAccelX: %f, RawAccelY: %f, RawAccelZ: %f", rawaccelX, rawaccelY,
-          rawaccelZ);
+      String rawaccelData = String.format("RawAccelX: %f, RawAccelY: %f, RawAccelZ: %f", rawaccelX, rawaccelY, rawaccelZ);
       System.out.println(gyroData);
       System.out.println(accelData);
       System.out.println(rawaccelData);
 
       timer.clear();
     }
-    */
   }
 }

@@ -10,10 +10,12 @@ public class BridgeBalancer {
     private float angle_last;
     private float m_acceleration_mps2;
     private int s_last;
-    private float y_power;
+    private double y_power;
     private boolean boarded = false;
     private float ERROR_CONSTANT_DEGREES = 3;
     private float MAX_ANGLE_CONSTANT = 90;
+
+    private float IS_MOVING_TOLERANCE = 3;
 
     private Timer timer;
     
@@ -53,12 +55,12 @@ public class BridgeBalancer {
 
     private void NextStateBDPLUS() throws Exception{
 
-        if (m_acceleration_mps2 >= 3 && m_deriv_angle_degrees < 0) {
+        if (m_acceleration_mps2 >= IS_MOVING_TOLERANCE && m_deriv_angle_degrees < 0) {
             s_last = STATE_BF_PLUS;
-        } else if (m_acceleration_mps2 < 0) {
+        } else if (m_acceleration_mps2 <= -IS_MOVING_TOLERANCE) {
             s_last = STATE_FB_PLUS;
         } 
-        else if (m_acceleration_mps2 < 0 && m_deriv_angle_degrees > 0){
+        else if (m_acceleration_mps2 >= IS_MOVING_TOLERANCE && m_deriv_angle_degrees > 0){
             s_last = STATE_BD_PLUS;
         }
         else {
@@ -69,9 +71,9 @@ public class BridgeBalancer {
     private void NextStateFBPLUS() throws Exception{
         if (Math.abs(m_angle_degrees) < ERROR_CONSTANT_DEGREES) {
             s_last = STATE_FC_PLUS;
-        } else if (m_acceleration_mps2 > 0) {
+        } else if (m_acceleration_mps2 > 0 && IsWithin(ERROR_CONSTANT_DEGREES, Math.abs(m_angle_degrees), MAX_ANGLE_CONSTANT)) {
             s_last = STATE_BD_PLUS;
-        } else if (m_acceleration_mps2 < 0) {
+        } else if (m_acceleration_mps2 < 0 && IsWithin(ERROR_CONSTANT_DEGREES, Math.abs(m_angle_degrees), MAX_ANGLE_CONSTANT)) {
             s_last = STATE_FB_PLUS;
         }
         else {
@@ -79,23 +81,29 @@ public class BridgeBalancer {
         }
     }
 
-    private void NextStateBFPLUS() {
+    private void NextStateBFPLUS() throws Exception{
         if (Math.abs(m_angle_degrees) <= ERROR_CONSTANT_DEGREES) {
             s_last = STATE_E;
-        } else if (m_acceleration_mps2 >= 3 && Math.abs(m_angle_degrees) >= ERROR_CONSTANT_DEGREES){
+        } else if (m_acceleration_mps2 >= IS_MOVING_TOLERANCE && Math.abs(m_angle_degrees) > ERROR_CONSTANT_DEGREES){
             s_last = STATE_BF_PLUS;
+        }
+        else {
+            throw new Exception("We reached an invalid acceleration: " + m_angle_degrees + " or angle: " + m_angle_degrees);
         }
     }
 
-    private void NextStateE() {
-        if (Math.abs(m_angle_degrees) <= ERROR_CONSTANT_DEGREES && Math.abs(m_acceleration_mps2) <= 1) {
+    private void NextStateE() throws Exception{
+        if (Math.abs(m_angle_degrees) <= ERROR_CONSTANT_DEGREES && Math.abs(m_acceleration_mps2) <= IS_MOVING_TOLERANCE) {
             s_last = STATE_B;
-        } else if (m_acceleration_mps2 < 0 && m_angle_degrees > 0) {
+        } else if (m_acceleration_mps2 <= -IS_MOVING_TOLERANCE && m_angle_degrees > ERROR_CONSTANT_DEGREES) {
             s_last = STATE_FB_PLUS;
-        } else if (m_acceleration_mps2 > 0 && m_angle_degrees < 0) {
+        } else if (m_acceleration_mps2 >= IS_MOVING_TOLERANCE && m_angle_degrees < ERROR_CONSTANT_DEGREES) {
             s_last = STATE_FB_MINUS;
-        } else {
+        } else if (Math.abs(m_angle_degrees) <= ERROR_CONSTANT_DEGREES && Math.abs(m_acceleration_mps2) >= IS_MOVING_TOLERANCE) {
             s_last = STATE_E;
+        }
+        else {
+            throw new Exception("We reached an invalid acceleration: " + m_angle_degrees + " or angle: " + m_angle_degrees);
         }
     }
 
@@ -103,55 +111,69 @@ public class BridgeBalancer {
         boarded = true;
     }
 
-    private void NextStateBFMINUS() {
-        if (Math.abs(m_angle_degrees - 0) <= 1) {
+    private void NextStateBFMINUS() throws Exception {
+        if (Math.abs(m_angle_degrees) <= ERROR_CONSTANT_DEGREES) {
             s_last = STATE_E;
-        } else {
+        } else if (m_acceleration_mps2 <= -IS_MOVING_TOLERANCE && Math.abs(m_angle_degrees) > ERROR_CONSTANT_DEGREES){
             s_last = STATE_BF_MINUS;
         }
-    }
-
-    private void NextStateFBMINUS() {
-        if (Math.abs(m_angle_degrees - 0) <= 1) {
-            s_last = STATE_FC_MINUS;
-        } else if (m_acceleration_mps2 < 0) {
-            s_last = STATE_BD_MINUS;
-        } else {
-            s_last = STATE_FB_MINUS;
+        else {
+            throw new Exception("We reached an invalid acceleration: " + m_angle_degrees + " or angle: " + m_angle_degrees);
         }
     }
 
-    private void NextStateBDMINUS() {
-        if (m_acceleration_mps2 < 0 && m_deriv_angle_degrees > 0) {
+    private void NextStateFBMINUS() throws Exception{
+        if (Math.abs(m_angle_degrees) < ERROR_CONSTANT_DEGREES) {
+            s_last = STATE_FC_MINUS;
+        } else if (m_acceleration_mps2 < 0 && IsWithin(ERROR_CONSTANT_DEGREES, Math.abs(m_angle_degrees), MAX_ANGLE_CONSTANT)) {
+            s_last = STATE_BD_MINUS;
+        } else if (m_acceleration_mps2 > 0 && IsWithin(ERROR_CONSTANT_DEGREES, Math.abs(m_angle_degrees), MAX_ANGLE_CONSTANT)) {
+            s_last = STATE_FB_MINUS;
+        }
+        else {
+            throw new Exception("We reached an invalid acceleration: " + m_angle_degrees + " or angle: " + m_angle_degrees);
+        }
+    }
+
+    private void NextStateBDMINUS() throws Exception{
+        if (m_acceleration_mps2 <= -IS_MOVING_TOLERANCE && m_deriv_angle_degrees > 0) {
             s_last = STATE_BF_MINUS;
-        } else if (m_acceleration_mps2 > 0) {
+        } else if (m_acceleration_mps2 >= IS_MOVING_TOLERANCE) {
             s_last = STATE_FB_MINUS;
-        } else {
+        } 
+        else if (m_acceleration_mps2 <= -IS_MOVING_TOLERANCE && m_deriv_angle_degrees < 0){
             s_last = STATE_BD_MINUS;
+        }
+        else {
+            throw new Exception("We reached an invalid acceleration: " + m_angle_degrees + " or change in angle: " + m_deriv_angle_degrees);
         }
     }
 
-    private void NextStateFCMINUS() {
-        if (Math.abs(m_angle_degrees - angle_last) >= 1) {
+    private void NextStateFCMINUS() throws Exception{
+        if (IsWithin(ERROR_CONSTANT_DEGREES, Math.abs(m_angle_degrees), MAX_ANGLE_CONSTANT)) {
             s_last = STATE_BD_MINUS;
-        } else {
+        } 
+        else if (Math.abs(m_angle_degrees) < ERROR_CONSTANT_DEGREES) {
             s_last = STATE_FC_MINUS;
         }
+        else {
+            throw new Exception("We reached an invalid angle: " + m_angle_degrees);
+        }
     }
 
-    public float GetAction() throws Exception{
+    public double GetAction() throws Exception{
         switch (s_last) {
             case (STATE_FC_PLUS):
-                y_power = 1.0f;
+                y_power = 1.0;
                 break;
             case (STATE_BD_PLUS):
-                y_power = 1.0f;
+                y_power = 1.0;
                 break;
             case (STATE_FB_PLUS):
-                y_power = 1.0f;
+                y_power = 1.0;
                 break;
             case (STATE_BF_PLUS):
-                y_power = 0.2f;
+                y_power = 0.2;
                 break;
             case (STATE_E):
                 //PID might go here
@@ -161,16 +183,16 @@ public class BridgeBalancer {
                 y_power = 0;
                 break;
             case (STATE_FC_MINUS):
-                y_power = -1.0f;
+                y_power = -1.0;
                 break;
             case (STATE_BD_MINUS):
-                y_power = -1.0f;
+                y_power = -1.0;
                 break;
             case (STATE_FB_MINUS):
-                y_power = -1.0f;
+                y_power = -1.0;
                 break;
             case (STATE_BF_MINUS):
-                y_power = -0.2f;
+                y_power = -0.2;
                 break;
             default:
                 throw new Exception("We reached an invalid state: " + s_last);
@@ -199,6 +221,7 @@ public class BridgeBalancer {
         m_angle_degrees = angle;
         m_deriv_angle_degrees = GetAngleDeriv();
         m_acceleration_mps2 = acceleration;
+        System.out.println(Integer.toString(s_last));
         switch (s_last) {
             case (STATE_FC_PLUS):
                 NextStateFCPLUS();

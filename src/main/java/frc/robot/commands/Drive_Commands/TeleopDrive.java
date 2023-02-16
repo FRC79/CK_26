@@ -14,7 +14,7 @@ public class TeleopDrive extends CommandBase {
 
   private Drivetrain m_MecanumDrive;
   private Joystick m_stick;
-  private Joystick m_stickr;
+  //private Joystick m_stickr;
   
   
   /** Creates a new TeleopDrive. */
@@ -28,7 +28,7 @@ public class TeleopDrive extends CommandBase {
   @Override
   public void initialize() {
     m_stick = new Joystick(OperatorConstants.DRIVER);
-    m_stickr = new Joystick(OperatorConstants.ROTATER);
+    //m_stickr = new Joystick(OperatorConstants.ROTATER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,7 +36,7 @@ public class TeleopDrive extends CommandBase {
   public void execute() {
     double yStick = -1 * m_stick.getY();
     double xStick = m_stick.getX();
-    double zStick = m_stickr.getX();
+    double zStick = m_stick.getZ();
     m_MecanumDrive.cartesianDrive(yStick, xStick, zStick);
   }
 
