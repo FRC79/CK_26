@@ -28,10 +28,24 @@ public static final class PivotConstants {
   /*Potentiometer Values*/
   public static final int PIVOT_POT_PORT = 0;
   //360 degrees x 10 turns, scaling factor for the analog voltage
-  public static final double RANGE_DEGREES = 3600;
+  public static final double POT_RANGE_DEGREES = 3600;
 
   public static final int MIN_ANGLE_LIMIT_PORT = 0;
   public static final int MAX_ANGLE_LIMIT_PORT = 1;
+
+  public static final double MAX_PID_POWER = 0.5;
+  public static final double MIN_PID_POWER = -0.5;
+
+  public static final double MIN_ANGLE_PIVOT = 0;
+  public static final double MAX_ANGLE_PIVOT = 360;
+
+  public static final double PIVOT_SETPOINT_ANGLE_TOLERANCE = 1;
+  public static final double PIVOT_SETPOINT_SPEED_TOLERANCE = 0.5;
+
+  public static final double P = 0.01;
+  public static final double I = 0.0;
+  public static final double D = 0.0;
+
 }
 
 
@@ -46,7 +60,7 @@ public static final class ExtensionConstants {
   public static final int MIN_EXTENSION_LIMIT_PORT = 0;
   public static final int MAX_EXTENSION_LIMIT_PORT = 1;
 
-  public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 1080;
+  public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 /*cm*/ / 3600 /*degs*/;
 }
 
 public static final class ClampConstants {

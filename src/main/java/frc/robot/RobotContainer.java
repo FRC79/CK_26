@@ -62,6 +62,7 @@ public class RobotContainer {
     new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).toggleOnTrue(new EnableClamp(m_Clamp)).toggleOnFalse(new DisableClamp(m_Clamp));
 
     new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON)
+
     .onTrue(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(0.5)))
     .onFalse(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(1.0)));
   }
