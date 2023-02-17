@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.commands.Pivot_Commands.*;
+import frc.robot.commands.Clamp_Commands.*;
+import frc.robot.commands.Extension_Commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +28,9 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain();
-  private final Arm m_arm = new Arm();
+  private final Pivot m_Pivot = new Pivot();
+  private final Extension m_Extension = new Extension();
+  private final Clamp m_Clamp = new Clamp();
 
   // The operator's controller 
   public GenericHID operator = new Joystick(Constants.OperatorConstants.OPERATOR);
@@ -47,51 +51,19 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    //Arm Buttons
-    new JoystickButton(operator, OperatorConstants.HIGH_GOAL_BUTTON).onTrue(Commands.runOnce(
-      () -> {
-        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_HIGH_RADS);
-        m_arm.enable();
-      }, 
-      m_arm));
+    new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotUp(m_Pivot)).whileFalse(new PivotStop(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.MED_GOAL_BUTTON).onTrue(Commands.runOnce(
-      () -> {
-        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_MED_RADS);
-        m_arm.enable();
-      }, 
-      m_arm));
+    new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotDown(m_Pivot)).whileFalse(new PivotStop(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.LOW_GOAL_BUTTON).onTrue(Commands.runOnce(
-      () -> {
-        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_LOW_RADS);
-        m_arm.enable();
-      }, 
-      m_arm));
-  
-    new JoystickButton(operator, OperatorConstants.PLAYSTATION_BUTTON).onTrue(Commands.runOnce(
-    () -> {
-      m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_PLAYSTATION_RADS);
-      m_arm.enable();
-    }, 
-    m_arm));
-    
-    new JoystickButton(operator, OperatorConstants.GROUND_BUTTON).onTrue(Commands.runOnce(
-      () -> {
-        m_arm.setGoal(Constants.ArmConstants.ARM_OFFSET_NUETRAL_RADS);
-        m_arm.enable();
-      }, 
-      m_arm));
-    
-    new JoystickButton(operator, OperatorConstants.DISABLE_ARM_BUTTON).onTrue(Commands.runOnce(m_arm::disable));
+    new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(new Extend(m_Extension)).whileFalse(new ExtensionStop(m_Extension));
+
+    new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension)).whileFalse(new ExtensionStop(m_Extension));
+
+    new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).toggleOnTrue(new EnableClamp(m_Clamp)).toggleOnFalse(new DisableClamp(m_Clamp));
 
     new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON)
     .onTrue(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(0.5)))
     .onFalse(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(1.0)));
-  }
-
-  public void disablePIDSubsystems() {
-    m_arm.disable();
   }
 
   /**
