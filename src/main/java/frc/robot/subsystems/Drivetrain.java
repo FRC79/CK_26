@@ -4,30 +4,22 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.ToDoubleFunction;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Drive_Commands.BridgeBalancer;
-import frc.robot.Logger;
+
 
 // gyro lib
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.trajectory.Trajectory.State;
 // SP interface for gyro
 import edu.wpi.first.wpilibj.SPI;
-
-import frc.robot.Timer;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -39,44 +31,34 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_VictorSPX frontRightMotor = new WPI_VictorSPX(DriveConstants.FR_MOTOR_PORT);
   private final WPI_TalonSRX backRightMotor = new WPI_TalonSRX(DriveConstants.BR_MOTOR_PORT);
 
-  private final MecanumDrive m_robotDrive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor,
+  public final MecanumDrive m_robotDrive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor,
       backRightMotor);
 
   /* gyro */
   public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  private Timer timer;
-
-  private final BridgeBalancer m_BridgeBalancer = new BridgeBalancer();
+  public final BridgeBalancer m_BridgeBalancer = new BridgeBalancer();
 
   // values for testing gyro
-  float pitch_angle;
-  float roll_angle;
-  float yaw_angle;
-  float rawaccelX;
-  float rawaccelY;
-  float rawaccelZ;
-  float accelX;
-  float accelY;
-  float accelZ;
-  float grav = 9.81f;
-  double yStick;
-  double xStick;
-  double zStick;
-
-  private Logger logger;
-  private Map<String, Float> floatColumns;
+  public float pitch_angle;
+  public float roll_angle;
+  public float yaw_angle;
+  public float rawaccelX;
+  public float rawaccelY;
+  public float rawaccelZ;
+  public float accelX;
+  public float accelY;
+  public float accelZ;
+  public float grav = 9.81f;
+  public double yStick;
+  public double xStick;
+  public double zStick;
 
 
   /** Creates a new MecanumDrive. */
   public Drivetrain() {
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
-
-    logger = new Logger("gyrotest.csv",
-        Arrays.asList("Pitch", "Roll", "Yaw", "AccelX", "AccelY", "AccelZ", "RawAccelX", "RawAccelY", "RayAccelZ"));
-    floatColumns = new HashMap<>();
-    timer = new Timer(500);
   }
 
   public void cartesianDrive(double y, double x, double z) {
@@ -99,37 +81,5 @@ public class Drivetrain extends SubsystemBase {
     accelX = gyro.getWorldLinearAccelX() * grav;
     accelY = gyro.getWorldLinearAccelY() * grav;
     accelZ = gyro.getWorldLinearAccelZ() * grav;
-
-    if (timer.isReady()) {
-      // floatColumns.put("Pitch", pitch_angle);
-      // floatColumns.put("Roll", roll_angle);
-      // floatColumns.put("Yaw", yaw_angle);
-      // floatColumns.put("AccelX", accelX);
-      // floatColumns.put("AccelY", accelY);
-      // floatColumns.put("AccelZ", accelZ);
-      // floatColumns.put("RawAccelX", rawaccelX);
-      // floatColumns.put("RawAccelY", rawaccelY);
-      // floatColumns.put("RawAccelZ", rawaccelZ);
-      // logger.logFloat(floatColumns);
-      // floatColumns.clear();
-
-      // String gyroData = String.format("Pitch: %f, Roll: %f, Yaw: %f", pitch_angle, roll_angle, yaw_angle);
-      // String accelData = String.format("AccelX: %f, AccelY: %f, AccelZ: %f", accelX, accelY, accelZ);
-      // String rawaccelData = String.format("RawAccelX: %f, RawAccelY: %f, RawAccelZ: %f", rawaccelX, rawaccelY,
-      //     rawaccelZ);
-      // System.out.println(gyroData);
-      // System.out.println(accelData);
-      // System.out.println(rawaccelData);
-      
-      double[] stickArray = {yStick, xStick, zStick};
-      SmartDashboard.putNumberArray("Joystick Values", stickArray);
-      String[] gyroArray = {Float.toString(pitch_angle), Float.toString(roll_angle), Float.toString(yaw_angle)};
-      SmartDashboard.putStringArray("Gyro Values", gyroArray);
-      String[] accelArray = {Float.toString(accelY) + " (Raw: " + Float.toString(rawaccelY) + ")", Float.toString(accelX) + " (Raw: " + Float.toString(rawaccelX) + ")", Float.toString(accelZ) + " (Raw: " + Float.toString(rawaccelZ) + ")"};
-      SmartDashboard.putStringArray("Acceleration Values", accelArray);
-      SmartDashboard.putString("State", m_BridgeBalancer.getState());
-
-      timer.clear();
-    }
   }
 }

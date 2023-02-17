@@ -206,7 +206,13 @@ public class BridgeBalancer {
     }
 
     public String getState(){
-        return state;
+        if(state != null){
+            return state;
+        }
+        else{
+            state = "Fully Carpeted +";
+            return state;
+        }
     }
 
     // Update State functions

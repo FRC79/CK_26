@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
@@ -25,6 +27,17 @@ public class Robot extends TimedRobot {
 
   private TeleopDrive m_TeleopDrive;
 
+  public static final String kDefaultAuto1 = "Autonomous 1";
+  public static final String kAuto2 = "Autonomous 2";
+  public static final String kAuto3 = "Autonomous 3";
+  public String m_autoSelected;
+  public final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  public int autonomousMode = 0;
+  public String autonomousModestr = "null";
+
+  double[] stickArray;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,6 +48,12 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_Drivetrain = new Drivetrain();
     m_robotContainer = new RobotContainer();
+    m_chooser.setDefaultOption("Autonomous 1", kDefaultAuto1);
+    m_chooser.addOption("Autonomous 2", kAuto2);
+    m_chooser.addOption("Autonomous 3", kAuto3);
+    SmartDashboard.putData("Autonomous Modes", m_chooser);
+    SmartDashboard.putData("Robot Drive Train", m_Drivetrain.m_robotDrive);
+    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -51,11 +70,28 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Stick Y", m_Drivetrain.yStick);
+    SmartDashboard.putNumber("Stick X", m_Drivetrain.xStick);
+    SmartDashboard.putNumber("Stick Z", m_Drivetrain.zStick);
+    SmartDashboard.putNumber("Pitch Value", m_Drivetrain.pitch_angle);
+    SmartDashboard.putNumber("Roll Value", m_Drivetrain.roll_angle);
+    SmartDashboard.putNumber("Yaw Value", m_Drivetrain.yaw_angle);
+    SmartDashboard.putNumber("Y Accel Value", m_Drivetrain.accelY);
+    SmartDashboard.putNumber("X Accel Value", m_Drivetrain.accelX);
+    SmartDashboard.putNumber("Z Accel Value", m_Drivetrain.accelZ);
+    SmartDashboard.putString("State", m_Drivetrain.m_BridgeBalancer.getState());
+    
+
+
+    m_autoSelected = m_chooser.getSelected();
+    SmartDashboard.putString("Selected Autonomous", m_autoSelected);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SmartDashboard.putString("Mode", "Disabled");
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -63,7 +99,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-
+    SmartDashboard.putString("Mode", "Autonomous");
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -86,7 +122,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+    SmartDashboard.putString("Mode", "Teleoperated");
     m_TeleopDrive.schedule();
   }
 
@@ -98,6 +134,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    SmartDashboard.putString("Mode", "Test");
   }
 
   /** This function is called periodically during test mode. */
