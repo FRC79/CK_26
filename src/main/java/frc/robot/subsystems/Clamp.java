@@ -4,20 +4,37 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClampConstants;
 
 public class Clamp extends SubsystemBase {
 
-  private final Solenoid clampSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, ClampConstants.SOLENOID_PORT);
+  private final DoubleSolenoid clampSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, ClampConstants.CLAMP_SOLENOID_PORT[0], ClampConstants.CLAMP_SOLENOID_PORT[1]);
 
   /** Creates a new Clamp. */
-  public Clamp() {}
+  public Clamp() {
+    clampSolenoid.set(Value.kOff);
+  }
 
-  public void enableSolenoid(boolean Enabled){
-    clampSolenoid.set(Enabled);
+  public void setClampSolenoidState(String state){
+    switch (state){
+      case ("Forward"):
+        clampSolenoid.set(Value.kForward);
+        break;
+      case ("Reverse"):
+        clampSolenoid.set(Value.kReverse);
+        break;
+      case ("Off"):
+        clampSolenoid.set(Value.kOff);
+        break;
+      default:
+        clampSolenoid.set(Value.kOff);
+        break;
+    }
   }
 
   @Override

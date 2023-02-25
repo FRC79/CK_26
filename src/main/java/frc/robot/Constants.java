@@ -21,6 +21,21 @@ public final class Constants {
     public static final int BL_MOTOR_PORT = 1;
     public static final int FR_MOTOR_PORT = 2;
     public static final int BR_MOTOR_PORT = 3;
+
+    /*Encoder Ports*/
+    public static final int[] FL_ENCODER_PORTS = new int[] {0,1};
+    public static final int[] BL_ENCODER_PORTS = new int[] {2,3};
+    public static final int[] FR_ENCODER_PORTS = new int[] {4,5};
+    public static final int[] BR_ENCODER_PORTS = new int[] {6,7};
+
+    public static final boolean FL_ENCODER_REVERSED = false;
+    public static final boolean BL_ENCODER_REVERSED = true;
+    public static final boolean FR_ENCODER_REVERSED = false;
+    public static final boolean BR_ENCODER_REVERSED = true;
+
+    public static final double DRIVE_ENCODER_CPR = 1024;
+    public static final double WHEEL_DIAMETER_METERS = 0.1524;
+    public static final double ENCODER_DISTANCE_PER_PULSE = (WHEEL_DIAMETER_METERS * Math.PI)/ DRIVE_ENCODER_CPR;
   }
 public static final class PivotConstants {
   /*Motor ports */
@@ -32,6 +47,9 @@ public static final class PivotConstants {
 
   public static final int MIN_ANGLE_LIMIT_PORT = 0;
   public static final int MAX_ANGLE_LIMIT_PORT = 1;
+
+  public static final int[] HIGH_SOLENOID_PORT = new int[] {0,1};
+  public static final int[] LOW_SOLENOID_PORT = new int[] {2,3};
 }
 
 
@@ -51,7 +69,7 @@ public static final class ExtensionConstants {
 
 public static final class ClampConstants {
   /* Solenoid port */
-  public static final int SOLENOID_PORT = 0;
+  public static final int[] CLAMP_SOLENOID_PORT = new int[] {0,1};
 }
 
   public static class OperatorConstants {

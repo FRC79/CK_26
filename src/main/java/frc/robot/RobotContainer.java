@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Pivot_Commands.*;
 import frc.robot.commands.Clamp_Commands.*;
+import frc.robot.commands.Drive_Commands.DriveForward;
 import frc.robot.commands.Extension_Commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -61,6 +62,8 @@ public class RobotContainer {
 
     new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).toggleOnTrue(new EnableClamp(m_Clamp)).toggleOnFalse(new DisableClamp(m_Clamp));
 
+    //new JoystickButton(operator, OperatorConstants.AUTODRIVE_BUTTON).onTrue(new DriveForward(m_Drivetrain).withTimeout(5));
+    
     new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON)
     .onTrue(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(0.5)))
     .onFalse(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(1.0)));
