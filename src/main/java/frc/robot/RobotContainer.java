@@ -65,6 +65,7 @@ public class RobotContainer {
     //new JoystickButton(operator, OperatorConstants.AUTODRIVE_BUTTON).onTrue(new DriveForward(m_Drivetrain).withTimeout(5));
     
     new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON)
+
     .onTrue(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(0.5)))
     .onFalse(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(1.0)));
   }
