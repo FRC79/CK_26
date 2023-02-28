@@ -30,6 +30,7 @@ import frc.robot.Timer;
 
 public class Drivetrain extends SubsystemBase {
 
+  // TODO: (Need to fix)
   /* Left Motors */
   private final WPI_TalonSRX frontLeftMotor = new WPI_TalonSRX(DriveConstants.FL_MOTOR_PORT);
   private final WPI_VictorSPX backLeftMotor = new WPI_VictorSPX(DriveConstants.BL_MOTOR_PORT);
@@ -38,73 +39,17 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_TalonSRX frontRightMotor = new WPI_TalonSRX(DriveConstants.FR_MOTOR_PORT);
   private final WPI_VictorSPX backRightMotor = new WPI_VictorSPX(DriveConstants.BR_MOTOR_PORT);
 
-  private final Encoder frontLeftEncoder = 
-    new Encoder(
-      DriveConstants.FL_ENCODER_PORTS[0], 
-      DriveConstants.FL_ENCODER_PORTS[1],
-      DriveConstants.FL_ENCODER_REVERSED);
-
-  private final Encoder backLeftEncoder = 
-    new Encoder(
-      DriveConstants.BL_ENCODER_PORTS[0], 
-      DriveConstants.BL_ENCODER_PORTS[1],
-      DriveConstants.BL_ENCODER_REVERSED);    
-      
-  private final Encoder frontRightEncoder = 
-    new Encoder(
-      DriveConstants.FR_ENCODER_PORTS[0], 
-      DriveConstants.FR_ENCODER_PORTS[1],
-      DriveConstants.FR_ENCODER_REVERSED);      
-
-  private final Encoder backRightEncoder = 
-    new Encoder(
-      DriveConstants.BR_ENCODER_PORTS[0], 
-      DriveConstants.BR_ENCODER_PORTS[1],
-      DriveConstants.BR_ENCODER_REVERSED); 
-
   private final MecanumDrive m_robotDrive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor,
       backRightMotor);
 
-
   /* gyro */
   public final AHRS gyro = new AHRS(SPI.Port.kMXP);
-
-  private Timer timer;
-
-  // values for testing gyro
-  float pitch_angle;
-  float roll_angle;
-  float yaw_angle;
-  float rawaccelX;
-  float rawaccelY;
-  float rawaccelZ;
-  float accelX;
-  float accelY;
-  float accelZ;
-  float grav = 9.81f;
-
-  private Logger logger;
-  private Map<String, Float> floatColumns;
-
-  private BridgeBalancer bridgeBalancer;
-
 
   /** Creates a new MecanumDrive. */
   public Drivetrain() {
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
     m_robotDrive.setDeadband(0.05);
-
-    logger = new Logger("gyrotest.csv",
-        Arrays.asList("Pitch", "Roll", "Yaw", "AccelX", "AccelY", "AccelZ", "RawAccelX", "RawAccelY", "RayAccelZ"));
-    floatColumns = new HashMap<>();
-    timer = new Timer(500);
-    bridgeBalancer = new BridgeBalancer();
-
-    frontLeftEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE);
-    backLeftEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE);
-    frontRightEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE);
-    backRightEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE);
   }
 
   public void cartesianDrive(double y, double x, double z) {
@@ -115,55 +60,7 @@ public class Drivetrain extends SubsystemBase {
     m_robotDrive.setMaxOutput(maxOutput);
   }
 
-  public double getDistance(){
-    return frontLeftEncoder.getDistance();
-  }
-
-  public double getAngle(){
-    return yaw_angle;
-  }
-
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    pitch_angle = gyro.getPitch();
-    roll_angle = gyro.getRoll();
-    yaw_angle = gyro.getYaw();
-    rawaccelX = gyro.getRawAccelX() * grav;
-    rawaccelY = gyro.getRawAccelY() * grav;
-    rawaccelZ = gyro.getRawAccelZ() * grav;
-    accelX = gyro.getWorldLinearAccelX() * grav;
-    accelY = gyro.getWorldLinearAccelY() * grav;
-    accelZ = gyro.getWorldLinearAccelZ() * grav;
-    /* 
-    try {
-      bridgeBalancer.UpdateState(pitch_angle, accelX);
-    } catch (Exception e) {
-      System.out.println("Woops, bridge code broke");
-    }
-    */
-
-    if (timer.isReady()) {
-      floatColumns.put("Pitch", pitch_angle);
-      floatColumns.put("Roll", roll_angle);
-      floatColumns.put("Yaw", yaw_angle);
-      floatColumns.put("AccelX", accelX);
-      floatColumns.put("AccelY", accelY);
-      floatColumns.put("AccelZ", accelZ);
-      floatColumns.put("RawAccelX", rawaccelX);
-      floatColumns.put("RawAccelY", rawaccelY);
-      floatColumns.put("RawAccelZ", rawaccelZ);
-      logger.logFloat(floatColumns);
-      floatColumns.clear();
-
-      String gyroData = String.format("Pitch: %f, Roll: %f, Yaw: %f", pitch_angle, roll_angle, yaw_angle);
-      String accelData = String.format("AccelX: %f, AccelY: %f, AccelZ: %f", accelX, accelY, accelZ);
-      String rawaccelData = String.format("RawAccelX: %f, RawAccelY: %f, RawAccelZ: %f", rawaccelX, rawaccelY, rawaccelZ);
-      System.out.println(gyroData);
-      System.out.println(accelData);
-      System.out.println(rawaccelData);
-
-      timer.clear();
-    }
   }
 }

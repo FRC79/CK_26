@@ -7,7 +7,6 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Pivot_Commands.*;
 import frc.robot.commands.Clamp_Commands.*;
-import frc.robot.commands.Drive_Commands.DriveForward;
 import frc.robot.commands.Extension_Commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -28,7 +27,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   // The robot's subsystems
-  private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Pivot m_Pivot = new Pivot();
   private final Extension m_Extension = new Extension();
   private final Clamp m_Clamp = new Clamp();
@@ -52,22 +50,15 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotUp(m_Pivot)).whileFalse(new PivotStop(m_Pivot));
+    new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotUp(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotDown(m_Pivot)).whileFalse(new PivotStop(m_Pivot));
+    new JoystickButton(operator, OperatorConstants.PIVOT_DOWN_BUTTON).whileTrue(new PivotDown(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(new Extend(m_Extension)).whileFalse(new ExtensionStop(m_Extension));
+    new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(new Extend(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension)).whileFalse(new ExtensionStop(m_Extension));
+    new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).toggleOnTrue(new EnableClamp(m_Clamp)).toggleOnFalse(new DisableClamp(m_Clamp));
-
-    //new JoystickButton(operator, OperatorConstants.AUTODRIVE_BUTTON).onTrue(new DriveForward(m_Drivetrain).withTimeout(5));
-    
-    new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON)
-
-    .onTrue(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(0.5)))
-    .onFalse(Commands.runOnce(() -> m_Drivetrain.setMaxOutput(1.0)));
+    new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).onTrue(new ToggleClamp(m_Clamp));
   }
 
   /**

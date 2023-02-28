@@ -7,12 +7,12 @@ package frc.robot.commands.Clamp_Commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Clamp;
 
-public class EnableClamp extends CommandBase {
+public class OpenClamp extends CommandBase {
 
   private final Clamp m_clamp;
 
   /** Creates a new EnableClamp. */
-  public EnableClamp(Clamp subsystem) {
+  public OpenClamp(Clamp subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_clamp = subsystem;
     addRequirements(m_clamp);

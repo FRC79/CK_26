@@ -28,7 +28,6 @@ public class TeleopDrive extends CommandBase {
   @Override
   public void initialize() {
     m_stick = new Joystick(OperatorConstants.DRIVER);
-    //m_stickr = new Joystick(OperatorConstants.ROTATER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -7,57 +7,39 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.*;
+// import com.revrobotics.CANSparkMax;
 
-public class Pivot extends PIDSubsystem {
+
+public class Pivot extends SubsystemBase {
 
   private final WPI_VictorSPX pivotMotor = new WPI_VictorSPX(PivotConstants.PIVOT_MOTOR_PORT);
-  private final AnalogPotentiometer pivotPot = new AnalogPotentiometer(
-  PivotConstants.PIVOT_POT_PORT, PivotConstants.POT_RANGE_DEGREES);
-  private final DigitalInput maxAngleLimitSwitch = new DigitalInput(PivotConstants.MAX_ANGLE_LIMIT_PORT);
-  private final DigitalInput minAngleLimitSwitch = new DigitalInput(PivotConstants.MIN_ANGLE_LIMIT_PORT);
-  double angleEstimate;
-
   private final DoubleSolenoid highSolenoid = new DoubleSolenoid(
   PneumaticsModuleType.CTREPCM, PivotConstants.HIGH_SOLENOID_PORT[0], PivotConstants.HIGH_SOLENOID_PORT[1]);
   private final DoubleSolenoid lowSolenoid = new DoubleSolenoid(
   PneumaticsModuleType.CTREPCM, PivotConstants.LOW_SOLENOID_PORT[0], PivotConstants.LOW_SOLENOID_PORT[1]);
-  private int setpointID = 0;
 
   
   public Pivot() {
-    super(
-      // The PIDController used by the subsystem
-      new PIDController(PivotConstants.P, PivotConstants.I, PivotConstants.D));
-    getController().enableContinuousInput(PivotConstants.MIN_ANGLE_PIVOT, PivotConstants.MAX_ANGLE_PIVOT);
-    getController().setTolerance(PivotConstants.PIVOT_SETPOINT_ANGLE_TOLERANCE,PivotConstants.PIVOT_SETPOINT_SPEED_TOLERANCE);
-    //getController().setIntegratorRange(-0.5, 0.5);
+    
   }
 
-
   public void setMotorPower(double power) {
-    if (power > 0){
-      if (maxAngleLimitSwitch.get()) {
-        pivotMotor.set(ControlMode.PercentOutput, 0);
-      } else{
-        pivotMotor.set(ControlMode.PercentOutput, power);
-      }
+    double MAX_POWER_MAG = 0.2;
+    double power_to_apply = 0.0;
+    if (power > MAX_POWER_MAG) {
+      power_to_apply = MAX_POWER_MAG;
+    } else if (power < -MAX_POWER_MAG) {
+      power_to_apply = -MAX_POWER_MAG;
     } else {
-      if (minAngleLimitSwitch.get()) {
-        pivotMotor.set(ControlMode.PercentOutput, 0);
-      } else {
-        pivotMotor.set(ControlMode.PercentOutput, power);
-      }
+      power_to_apply = power;
     }
+      
+    pivotMotor.set(ControlMode.PercentOutput, power_to_apply);
   }
 
   public void setHighSolenoidState(String state){
@@ -92,39 +74,5 @@ public class Pivot extends PIDSubsystem {
         lowSolenoid.set(Value.kOff);
         break;
     }
-  }
-
-  public boolean getMaxLimitState(){
-    return maxAngleLimitSwitch.get();
-  }
-
-  public boolean getMinLimitState(){
-    return minAngleLimitSwitch.get();
-  }
-
-  public void newSetpoint(double desiredAngle){
-    getController().reset();
-    getController().setSetpoint(desiredAngle);
-    setpointID += 1;
-  }
-
-  public int getSetpointID(){
-    return setpointID;
-  }
-
-  @Override
-  public void useOutput(double output, double setpoint) {
-    // Use the output here
-  }
-
-  public double getCommand(){
-    return MathUtil.clamp(getController().calculate(getMeasurement()),PivotConstants.MIN_PID_POWER,PivotConstants.MAX_PID_POWER);
-  }
-
-  @Override
-  public double getMeasurement() {
-    // Return the process variable measurement here
-    angleEstimate = pivotPot.get();
-    return angleEstimate;
   }
 }
