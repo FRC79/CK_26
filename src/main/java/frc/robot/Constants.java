@@ -52,6 +52,8 @@ public final class Constants {
     public static final int OPERATOR = 1;
 
     /* Controller Buttons */
+    public static final int TOGGLE_HIGH_PISTON_BUTTON = 3;
+    public static final int TOGGLE_LOW_PISTON_BUTTON = 4;
     public static final int GRIP_BUTTON = 5;
     public static final int PIVOT_UP_BUTTON = 9;
     public static final int PIVOT_DOWN_BUTTON = 10;

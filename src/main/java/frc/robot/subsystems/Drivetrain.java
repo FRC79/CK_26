@@ -22,11 +22,9 @@ import frc.robot.Logger;
 // gyro lib
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
 // SP interface for gyro
 import edu.wpi.first.wpilibj.SPI;
 
-import frc.robot.Timer;
 
 public class Drivetrain extends SubsystemBase {
 
