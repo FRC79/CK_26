@@ -50,19 +50,19 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotUp(m_Pivot));
+    // new JoystickButton(operator, OperatorConstants.PIVOT_UP_BUTTON).whileTrue(new PivotUp(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.PIVOT_DOWN_BUTTON).whileTrue(new PivotDown(m_Pivot));
+    // new JoystickButton(operator, OperatorConstants.PIVOT_DOWN_BUTTON).whileTrue(new PivotDown(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(new Extend(m_Extension));
+    // new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(new Extend(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension));
+    // new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).onTrue(new ToggleClamp(m_Clamp));
+    // new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).onTrue(new ToggleClamp(m_Clamp));
 
-    new JoystickButton(operator, OperatorConstants.TOGGLE_HIGH_PISTON_BUTTON).onTrue(new ToggleHighSolenoid(m_Pivot));
+    // new JoystickButton(operator, OperatorConstants.TOGGLE_HIGH_PISTON_BUTTON).onTrue(new ToggleHighSolenoid(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.TOGGLE_LOW_PISTON_BUTTON).onTrue(new ToggleLowSolenoid(m_Pivot));
+    // new JoystickButton(operator, OperatorConstants.TOGGLE_LOW_PISTON_BUTTON).onTrue(new ToggleLowSolenoid(m_Pivot));
   }
 
   /**

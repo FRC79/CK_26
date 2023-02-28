@@ -29,6 +29,7 @@ public class Pivot extends SubsystemBase {
 
   public Pivot() {
     pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    pivotMotor.set(0.0);
     highSolenoid.set(Value.kReverse);
     m_highSolenoidState = "Reverse";
     lowSolenoid.set(Value.kReverse);

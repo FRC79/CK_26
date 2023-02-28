@@ -32,7 +32,7 @@ public final class Constants {
     public static final int PIVOT_MOTOR_PORT = 4;
 
     public static final int[] HIGH_SOLENOID_PORT = new int[] { 0, 1 };
-    public static final int[] LOW_SOLENOID_PORT = new int[] { 2, 3 };
+    public static final int[] LOW_SOLENOID_PORT = new int[] { 4, 5 };
 
   }
 
@@ -44,7 +44,7 @@ public final class Constants {
 
   public static final class ClampConstants {
     /* Solenoid port */
-    public static final int[] CLAMP_SOLENOID_PORT = new int[] { 0, 1 };
+    public static final int[] CLAMP_SOLENOID_PORT = new int[] { 6, 7 };
   }
 
   public static class OperatorConstants {

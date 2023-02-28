@@ -18,6 +18,7 @@ public class Extension extends SubsystemBase {
       CANSparkMaxLowLevel.MotorType.kBrushless);
 
   public Extension() {
+    extensionMotor.set(0.0);
   }
 
   public void setMotorPower(double power) {
