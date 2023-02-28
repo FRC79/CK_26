@@ -58,7 +58,7 @@ public class RobotContainer {
 
     // new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension));
 
-    // new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).onTrue(new ToggleClamp(m_Clamp));
+    // new JoystickButton(operator, OperatorConstants.GRIP_BUTTON).toggleOnTrue(new ToggleClamp(m_Clamp));
 
     // new JoystickButton(operator, OperatorConstants.TOGGLE_HIGH_PISTON_BUTTON).onTrue(new ToggleHighSolenoid(m_Pivot));
 

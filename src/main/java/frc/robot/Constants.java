@@ -54,10 +54,10 @@ public final class Constants {
     /* Controller Buttons */
     public static final int TOGGLE_HIGH_PISTON_BUTTON = 3;
     public static final int TOGGLE_LOW_PISTON_BUTTON = 4;
-    public static final int GRIP_BUTTON = 5;
-    public static final int PIVOT_UP_BUTTON = 9;
-    public static final int PIVOT_DOWN_BUTTON = 10;
-    public static final int EXTEND_BUTTON = 11;
-    public static final int RETRACT_BUTTON = 12;
+    public static final int GRIP_BUTTON = 12;
+    public static final int PIVOT_UP_BUTTON = 3;
+    public static final int PIVOT_DOWN_BUTTON = 4;
+    public static final int EXTEND_BUTTON = 6;
+    public static final int RETRACT_BUTTON = 5;
   }
 }
