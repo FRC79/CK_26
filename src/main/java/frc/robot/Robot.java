@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Drive_Commands.*;
 
@@ -24,6 +25,8 @@ public class Robot extends TimedRobot {
   private Drivetrain m_Drivetrain;
 
   private TeleopDrive m_TeleopDrive;
+
+  private Timer m_timer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -56,6 +59,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    m_robotContainer.getPivot().cutMotorPower();
   }
 
   @Override
@@ -64,13 +68,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.getPivot().engageMotorPower();
   }
 
   /** This function is called periodically during autonomous. */
@@ -91,11 +96,25 @@ public class Robot extends TimedRobot {
     }
 
     m_TeleopDrive.schedule();
+
+    m_robotContainer.getPivot().engageMotorPower();
+
+    m_timer = new Timer(100);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (m_timer.isReady()) {
+      SmartDashboard.putNumber("Position (Revs)", m_robotContainer.getPivot().getEncoder().getPosition());
+      SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
+      SmartDashboard.putNumber("Velocity Setpoint (RPM)", m_robotContainer.getPivot().getVelocitySetpoint());
+      SmartDashboard.putNumber("Output Max", m_robotContainer.getPivot().getPIDController().getOutputMax());
+      SmartDashboard.putNumber("Output Min", m_robotContainer.getPivot().getPIDController().getOutputMin());
+      SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
+      m_timer.clear();
+    }
+  }
 
   @Override
   public void testInit() {

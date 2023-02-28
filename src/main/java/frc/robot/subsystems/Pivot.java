@@ -10,10 +10,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
 public class Pivot extends SubsystemBase {
 
@@ -27,27 +30,64 @@ public class Pivot extends SubsystemBase {
   private String m_highSolenoidState = "Reverse";
   private String m_lowSolenoidState = "Reverse";
 
+  private double m_velocitySetpoint = 0;
+
   public Pivot() {
     pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     pivotMotor.set(0.0);
+
+    // TODO: Set soft limits after looking at values on smart dash.
+    cutMotorPower();
+    getPIDController().setP(PivotConstants.kP_VELOCITY);
+    getPIDController().setI(PivotConstants.kI_VELOCITY);
+    getPIDController().setD(PivotConstants.kD_VELOCITY);
+    getPIDController().setIZone(PivotConstants.KIz_VELOCITY);
+    getPIDController().setFF(PivotConstants.kFF_VELOCITY);
+
     highSolenoid.set(Value.kReverse);
     m_highSolenoidState = "Reverse";
     lowSolenoid.set(Value.kReverse);
     m_lowSolenoidState = "Reverse";
   }
 
-  public void setMotorPower(double power) {
-    double MAX_POWER_MAG = 0.2;
-    double power_to_apply = 0.0;
-    if (power > MAX_POWER_MAG) {
-      power_to_apply = MAX_POWER_MAG;
-    } else if (power < -MAX_POWER_MAG) {
-      power_to_apply = -MAX_POWER_MAG;
-    } else {
-      power_to_apply = power;
-    }
+  public double getMotorOutput() {
+    return pivotMotor.get();
+  }
 
+  public void setMotorPower(double power) {
+    double power_to_apply = MathUtil.clamp(power, -PivotConstants.kMAX_OUTPUT_MAG_VELOCITY,
+        PivotConstants.kMAX_OUTPUT_MAG_VELOCITY);
     pivotMotor.set(power_to_apply);
+  }
+
+  public void setVelocitySetpoint(double rpm_setpoint) {
+    double clamped_setpoint = MathUtil.clamp(rpm_setpoint, -PivotConstants.kMAX_SETPOINT_RPM,
+        PivotConstants.kMAX_SETPOINT_RPM);
+    getPIDController().setReference(rpm_setpoint, CANSparkMax.ControlType.kVelocity);
+    m_velocitySetpoint = rpm_setpoint;
+  }
+
+  public double getVelocitySetpoint() {
+    return m_velocitySetpoint;
+  }
+
+  public void cutMotorPower() {
+    getPIDController().setOutputRange(0, 0);
+    setVelocitySetpoint(0);
+    pivotMotor.set(0.0);
+  }
+
+  public void engageMotorPower() {
+    getPIDController().setOutputRange(-PivotConstants.kMAX_OUTPUT_MAG_VELOCITY,
+        PivotConstants.kMAX_OUTPUT_MAG_VELOCITY);
+  }
+
+  public RelativeEncoder getEncoder() {
+    return pivotMotor.getEncoder();
+  }
+
+  public SparkMaxPIDController getPIDController() {
+    return pivotMotor.getPIDController();
   }
 
   public void setHighSolenoidState(String state) {

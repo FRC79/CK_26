@@ -24,13 +24,17 @@ public class PivotUp extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Pivot.setMotorPower(0.2);
+    // m_Pivot.setMotorPower(0.2);
+    m_Pivot.engageMotorPower();
+    m_Pivot.setVelocitySetpoint(1.6);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Pivot.setMotorPower(0);
+    // m_Pivot.setMotorPower(0);
+    // m_Pivot.setVelocitySetpoint(0.0);
+    m_Pivot.cutMotorPower();
   }
 
   // Returns true when the command should end.
