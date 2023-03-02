@@ -84,7 +84,6 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-
     m_TeleopDrive = new TeleopDrive(m_Drivetrain);
 
     if (m_autonomousCommand != null) {
@@ -102,11 +101,10 @@ public class Robot extends TimedRobot {
     if (m_timer.isReady()) {
       SmartDashboard.putNumber("Position (Revs)", m_robotContainer.getPivot().getEncoder().getPosition());
       SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
-      // SmartDashboard.putNumber("Velocity Setpoint (RPM)", m_robotContainer.getPivot().getVelocitySetpoint());
-      // SmartDashboard.putNumber("Output Max", m_robotContainer.getPivot().getPIDController().getOutputMax());
-      // SmartDashboard.putNumber("Output Min", m_robotContainer.getPivot().getPIDController().getOutputMin());
       SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
       SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
+      SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters", m_Drivetrain.getFrontLeftDistanceMeters());
+      SmartDashboard.putNumber("BackRightEncoderDistanceMeters", m_Drivetrain.getBackRightDistanceMeters());
       m_timer.clear();
     }
   }

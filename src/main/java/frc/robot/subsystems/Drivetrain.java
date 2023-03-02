@@ -22,9 +22,9 @@ import frc.robot.Logger;
 // gyro lib
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Encoder;
 // SP interface for gyro
 import edu.wpi.first.wpilibj.SPI;
-
 
 public class Drivetrain extends SubsystemBase {
 
@@ -40,6 +40,17 @@ public class Drivetrain extends SubsystemBase {
   private final MecanumDrive m_robotDrive = new MecanumDrive(frontLeftMotor, backLeftMotor, frontRightMotor,
       backRightMotor);
 
+  /* Encoders */
+  private final Encoder frontLeftEncoder = new Encoder(
+      DriveConstants.FL_ENCODER_PORTS[0],
+      DriveConstants.FL_ENCODER_PORTS[1],
+      DriveConstants.FL_ENCODER_REVERSED);
+
+  private final Encoder backRightEncoder = new Encoder(
+      DriveConstants.BR_ENCODER_PORTS[0],
+      DriveConstants.BR_ENCODER_PORTS[1],
+      DriveConstants.BR_ENCODER_REVERSED);
+
   /* gyro */
   public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -48,14 +59,30 @@ public class Drivetrain extends SubsystemBase {
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
     m_robotDrive.setDeadband(0.05);
+
+    frontLeftEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE_METERS);
+    backRightEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE_METERS);
   }
 
   public void cartesianDrive(double y, double x, double z) {
     m_robotDrive.driveCartesian(y, x, z);
   }
 
-  public void setMaxOutput(double maxOutput){
+  public void setMaxOutput(double maxOutput) {
     m_robotDrive.setMaxOutput(maxOutput);
+  }
+
+  public double getFrontLeftDistanceMeters(){
+    return frontLeftEncoder.getDistance();
+  }
+
+  public double getBackRightDistanceMeters() {
+    return backRightEncoder.getDistance();
+  }
+
+  public void resetEncoders() {
+    frontLeftEncoder.reset();
+    backRightEncoder.reset();
   }
 
   @Override

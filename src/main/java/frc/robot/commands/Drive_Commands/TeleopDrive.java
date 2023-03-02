@@ -27,6 +27,7 @@ public class TeleopDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_MecanumDrive.resetEncoders();
     m_stick = new Joystick(OperatorConstants.DRIVER);
   }
 

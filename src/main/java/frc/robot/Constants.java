@@ -25,6 +25,18 @@ public final class Constants {
     public static final int BL_MOTOR_PORT = 1;
     public static final int FR_MOTOR_PORT = 2;
     public static final int BR_MOTOR_PORT = 3;
+
+    // Encoders
+    public static final int[] FL_ENCODER_PORTS = new int[] {1, 0};
+    public static final int[] BR_ENCODER_PORTS = new int[] {9, 8};
+
+    public static final boolean FL_ENCODER_REVERSED = false;
+    public static final boolean BR_ENCODER_REVERSED = true;
+
+    // therefore pi * 0.1524 == 0.478
+    public static final double DRIVE_ENCODER_CPR = 1024; // Clicks per rev, 2^10
+    public static final double WHEEL_DIAMETER_METERS = 0.1524; // 6" wheels
+    public static final double ENCODER_DISTANCE_PER_PULSE_METERS = (WHEEL_DIAMETER_METERS * Math.PI)/ DRIVE_ENCODER_CPR;
   }
 
   public static final class PivotConstants {
