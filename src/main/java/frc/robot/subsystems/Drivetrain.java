@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Drive_Commands.BridgeBalancer;
+import frc.robot.Constants;
 import frc.robot.Logger;
 
 // gyro lib
@@ -52,7 +53,10 @@ public class Drivetrain extends SubsystemBase {
       DriveConstants.BR_ENCODER_REVERSED);
 
   /* gyro */
-  public final AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+  /* Slow mode toggle state */
+  private boolean slow_mode_enabled = false;
 
   /** Creates a new MecanumDrive. */
   public Drivetrain() {
@@ -72,7 +76,16 @@ public class Drivetrain extends SubsystemBase {
     m_robotDrive.setMaxOutput(maxOutput);
   }
 
-  public double getFrontLeftDistanceMeters(){
+  public void setSlowModeEnabled(boolean state) {
+    slow_mode_enabled = state;
+    setMaxOutput(isSlowModeEnabled() ? DriveConstants.SLOW_MODE_DRIVE_POWER : DriveConstants.FAST_MODE_DRIVE_POWER);
+  }
+
+  public boolean isSlowModeEnabled() {
+    return slow_mode_enabled;
+  }
+
+  public double getFrontLeftDistanceMeters() {
     return frontLeftEncoder.getDistance();
   }
 

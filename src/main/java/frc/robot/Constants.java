@@ -26,6 +26,10 @@ public final class Constants {
     public static final int FR_MOTOR_PORT = 2;
     public static final int BR_MOTOR_PORT = 3;
 
+    /* Drive mode powers */
+    public static final double FAST_MODE_DRIVE_POWER = 1.0;
+    public static final double SLOW_MODE_DRIVE_POWER = 0.5;
+
     // Encoders
     public static final int[] FL_ENCODER_PORTS = new int[] {1, 0};
     public static final int[] BR_ENCODER_PORTS = new int[] {9, 8};
@@ -85,5 +89,8 @@ public final class Constants {
     // Height pistons for pivot
     public static final int HARD_STOP_HIGH_TOGGLE_BUTTON = 8;
     public static final int HARD_STOP_LOW_TOGGLE_BUTTON = 9;
+
+    // Slow mode for driving the wheels
+    public static final int SLOW_MODE_BUTTON = 1;
   }
 }

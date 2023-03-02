@@ -22,8 +22,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private Drivetrain m_Drivetrain;
-
   private TeleopDrive m_TeleopDrive;
 
   private Timer m_timer;
@@ -36,7 +34,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_Drivetrain = new Drivetrain();
     m_robotContainer = new RobotContainer();
   }
 
@@ -84,7 +81,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_TeleopDrive = new TeleopDrive(m_Drivetrain);
+    m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -103,9 +100,9 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
       SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
       SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
-      SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters", m_Drivetrain.getFrontLeftDistanceMeters());
-      SmartDashboard.putNumber("BackRightEncoderDistanceMeters", m_Drivetrain.getBackRightDistanceMeters());
-      SmartDashboard.putNumber("GyroPitchDegrees", m_Drivetrain.getGyroPitchAngleDegrees());
+      SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters", m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+      SmartDashboard.putNumber("BackRightEncoderDistanceMeters", m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+      SmartDashboard.putNumber("GyroPitchDegrees", m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
       m_timer.clear();
     }
   }

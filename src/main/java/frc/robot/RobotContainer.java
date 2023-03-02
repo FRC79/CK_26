@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Pivot_Commands.*;
 import frc.robot.commands.Clamp_Commands.*;
+import frc.robot.commands.Drive_Commands.ToggleSlowMode;
 import frc.robot.commands.Extension_Commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -27,6 +28,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   // The robot's subsystems
+  private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Pivot m_Pivot = new Pivot();
   private final Extension m_Extension = new Extension();
   private final Clamp m_Clamp = new Clamp();
@@ -39,12 +41,20 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public Drivetrain getDrivetrain() {
+    return m_Drivetrain;
+  }
+
   public Pivot getPivot() {
     return m_Pivot;
   }
 
   public Extension getExtension() {
     return m_Extension;
+  }
+
+  public Clamp getClamp() {
+    return m_Clamp;
   }
 
   /**
@@ -73,6 +83,8 @@ public class RobotContainer {
     // new JoystickButton(operator, OperatorConstants.HARD_STOP_HIGH_TOGGLE_BUTTON).onTrue(new ToggleHighSolenoid(m_Pivot));
 
     // new JoystickButton(operator, OperatorConstants.HARD_STOP_LOW_TOGGLE_BUTTON).onTrue(new ToggleLowSolenoid(m_Pivot));
+
+    // new JoystickButton(operator, OperatorConstants.SLOW_MODE_BUTTON).onTrue(new ToggleSlowMode(m_Drivetrain));
   }
 
   /**
