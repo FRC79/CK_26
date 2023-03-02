@@ -76,14 +76,17 @@ public class RobotContainer {
     // new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON).whileTrue(new PivotTowardsRobotFront(m_Pivot));
     // new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON).whileTrue(new PivotTowardsRobotBack(m_Pivot));
 
-    new JoystickButton(operator, OperatorConstants.EXTENSION_BUTTON).whileTrue(new Extend(m_Extension));
+    // TESTED AND WORK WELL
+    // new JoystickButton(operator, OperatorConstants.EXTENSION_BUTTON).whileTrue(new Extend(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.RETRACTION_BUTTON).whileTrue(new Retract(m_Extension));
+    // new JoystickButton(operator, OperatorConstants.RETRACTION_BUTTON).whileTrue(new Retract(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.CLAMP_OPEN_BUTTON).whileTrue(new OpenClamp(m_Clamp));
+    // new JoystickButton(operator, OperatorConstants.CLAMP_OPEN_BUTTON).whileTrue(new OpenClamp(m_Clamp));
 
-    new JoystickButton(operator, OperatorConstants.CLAMP_CLOSE_BUTTON).whileTrue(new CloseClamp(m_Clamp));
+    // new JoystickButton(operator, OperatorConstants.CLAMP_CLOSE_BUTTON).whileTrue(new CloseClamp(m_Clamp));
 
+
+    // NEED TO FIX
     // new JoystickButton(operator, OperatorConstants.HARD_STOP_HIGH_TOGGLE_BUTTON).onTrue(new ToggleHighSolenoid(m_Pivot));
 
     // new JoystickButton(operator, OperatorConstants.HARD_STOP_LOW_TOGGLE_BUTTON).onTrue(new ToggleLowSolenoid(m_Pivot));

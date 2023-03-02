@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.MathUtil;
-
-
 import frc.robot.Constants.*;
 import frc.robot.subsystems.Pivot;
 
@@ -20,12 +18,16 @@ public class PivotTeleop extends CommandBase {
   
   private static final double MAX_ENCODER_VALUE = 43.7; // revolutions of the drive axel
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
+  private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
   private static final double UPRIGHT_PIVOT_VALUE = 24.0; // the value of the encoder when the pivot is at the top of rotation.
   private static final double MAX_MOTOR_VALUE = 0.2;
   private static final double DAMPENER_CONSTANT = 0.00001;
   private static final double MAX_CUSHION_OUTPUT_VALUE = 0.2;
   private static final double MAX_TOTAL_MOTOR_VALUE = MAX_CUSHION_OUTPUT_VALUE;
   private boolean faulted = false;
+  private double commanded_value = 0.0;
+  private double joystick_total_value = 0.0;
+  private double cushion_value = 0.0;
 
 // Case 1) 
 
@@ -104,10 +106,30 @@ public class PivotTeleop extends CommandBase {
         joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
     }
 
+    cushion_value = cushion_motor_power;
+    joystick_total_value = joystick_motor_power_towards_back + joystick_motor_power_towards_front;
+
     double total_power = cushion_motor_power + joystick_motor_power_towards_back + joystick_motor_power_towards_front;
     double clamped_total_power = MathUtil.clamp(total_power, -MAX_TOTAL_MOTOR_VALUE, MAX_TOTAL_MOTOR_VALUE);
     // m_pivot.setMotorPower(clamped_total_power);
     m_pivot.setMotorPower(0);
+    commanded_value = clamped_total_power;
+  }
+
+  public boolean getFaulted() {
+    return faulted;
+  }
+
+  public double getCommandedValue() {
+    return commanded_value;
+  }
+
+  public double getCushionMotorPower() {
+    return cushion_value;
+  }
+
+  public double getJoystickTotalPower() {
+    return joystick_total_value;
   }
 
   // Called once the command ends or is interrupted.

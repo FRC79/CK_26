@@ -110,6 +110,10 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters", m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
       SmartDashboard.putNumber("BackRightEncoderDistanceMeters", m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
       SmartDashboard.putNumber("GyroPitchDegrees", m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+      SmartDashboard.putNumber("CommandedPivotGravityAssist", m_pivotTeleop.getCommandedValue());
+      SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+      SmartDashboard.putNumber("CushionMotorValue", m_pivotTeleop.getCushionMotorPower());
+      SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getJoystickTotalPower());
       m_timer.clear();
     }
   }
