@@ -27,17 +27,7 @@ public class Extension extends SubsystemBase {
 
 
   public void setMotorPower(double power) {
-    double MAX_POWER_MAG = 0.2;
-    double power_to_apply = 0.0;
-    if (power > MAX_POWER_MAG) {
-      power_to_apply = MAX_POWER_MAG;
-    } else if (power < -MAX_POWER_MAG) {
-      power_to_apply = -MAX_POWER_MAG;
-    } else {
-      power_to_apply = power;
-    }
-
-    extensionMotor.set(power_to_apply);
+    extensionMotor.set(power);
   }
 
   public double getExtensionDistance() {

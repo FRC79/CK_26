@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Drive_Commands.*;
+import frc.robot.commands.Pivot_Commands.PivotTeleop;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,6 +24,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private TeleopDrive m_TeleopDrive;
+
+  private PivotTeleop m_pivotTeleop;
 
   private Timer m_timer;
 
@@ -55,7 +58,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {  }
+  public void disabledInit() { m_pivotTeleop.cancel(); }
 
   @Override
   public void disabledPeriodic() {}
@@ -82,12 +85,16 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain());
+    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
     m_TeleopDrive.schedule();
+
+    m_pivotTeleop.init(m_robotContainer.getOperatorJoystick());
+    m_pivotTeleop.schedule();
 
     m_timer = new Timer(100);
   }

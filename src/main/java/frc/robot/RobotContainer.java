@@ -57,6 +57,10 @@ public class RobotContainer {
     return m_Clamp;
   }
 
+  public GenericHID getOperatorJoystick() {
+    return operator;
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -68,9 +72,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON).whileTrue(new PivotTowardsRobotFront(m_Pivot));
-
-    new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON).whileTrue(new PivotTowardsRobotBack(m_Pivot));
+    // NOTE: DO NOT USE THESE
+    // new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON).whileTrue(new PivotTowardsRobotFront(m_Pivot));
+    // new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON).whileTrue(new PivotTowardsRobotBack(m_Pivot));
 
     new JoystickButton(operator, OperatorConstants.EXTENSION_BUTTON).whileTrue(new Extend(m_Extension));
 

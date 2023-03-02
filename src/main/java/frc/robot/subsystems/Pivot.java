@@ -47,9 +47,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setMotorPower(double power) {
-    double power_to_apply = MathUtil.clamp(power, -PivotConstants.kMAX_OUTPUT_MAG_VELOCITY,
-        PivotConstants.kMAX_OUTPUT_MAG_VELOCITY);
-    pivotMotor.set(power_to_apply);
+    pivotMotor.set(power);
   }
 
   public RelativeEncoder getEncoder() {
