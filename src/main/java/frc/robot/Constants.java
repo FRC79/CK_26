@@ -33,17 +33,6 @@ public final class Constants {
 
     public static final int[] HIGH_SOLENOID_PORT = new int[] { 0, 1 };
     public static final int[] LOW_SOLENOID_PORT = new int[] { 4, 5 };
-
-    /* PID Constants for velocity controller.
-     * Velocity is measured in RPM (revs / minute by default).
-     */
-    public static final double kP_VELOCITY = 0.1;
-    public static final double kI_VELOCITY = 0.0;
-    public static final double kD_VELOCITY = 0.0;
-    public static final double KIz_VELOCITY = 0.0;
-    public static final double kFF_VELOCITY = 0.0;
-    public static final double kMAX_OUTPUT_MAG_VELOCITY = 0.2;
-    public static final double kMAX_SETPOINT_RPM = 1.6; // about 10 deg / second
   }
 
   public static final class ExtensionConstants {

@@ -36,14 +36,6 @@ public class Pivot extends SubsystemBase {
     pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     pivotMotor.set(0.0);
 
-    // TODO: Set soft limits after looking at values on smart dash.
-    cutMotorPower();
-    getPIDController().setP(PivotConstants.kP_VELOCITY);
-    getPIDController().setI(PivotConstants.kI_VELOCITY);
-    getPIDController().setD(PivotConstants.kD_VELOCITY);
-    getPIDController().setIZone(PivotConstants.KIz_VELOCITY);
-    getPIDController().setFF(PivotConstants.kFF_VELOCITY);
-
     highSolenoid.set(Value.kReverse);
     m_highSolenoidState = "Reverse";
     lowSolenoid.set(Value.kReverse);
@@ -60,34 +52,8 @@ public class Pivot extends SubsystemBase {
     pivotMotor.set(power_to_apply);
   }
 
-  public void setVelocitySetpoint(double rpm_setpoint) {
-    double clamped_setpoint = MathUtil.clamp(rpm_setpoint, -PivotConstants.kMAX_SETPOINT_RPM,
-        PivotConstants.kMAX_SETPOINT_RPM);
-    getPIDController().setReference(rpm_setpoint, CANSparkMax.ControlType.kVelocity);
-    m_velocitySetpoint = rpm_setpoint;
-  }
-
-  public double getVelocitySetpoint() {
-    return m_velocitySetpoint;
-  }
-
-  public void cutMotorPower() {
-    getPIDController().setOutputRange(0, 0);
-    setVelocitySetpoint(0);
-    pivotMotor.set(0.0);
-  }
-
-  public void engageMotorPower() {
-    getPIDController().setOutputRange(-PivotConstants.kMAX_OUTPUT_MAG_VELOCITY,
-        PivotConstants.kMAX_OUTPUT_MAG_VELOCITY);
-  }
-
   public RelativeEncoder getEncoder() {
     return pivotMotor.getEncoder();
-  }
-
-  public SparkMaxPIDController getPIDController() {
-    return pivotMotor.getPIDController();
   }
 
   public void setHighSolenoidState(String state) {
