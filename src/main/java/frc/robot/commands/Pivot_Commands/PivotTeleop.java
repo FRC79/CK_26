@@ -20,6 +20,7 @@ public class PivotTeleop extends CommandBase {
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
   private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
   private static final double UPRIGHT_PIVOT_VALUE = 24.0; // the value of the encoder when the pivot is at the top of rotation.
+  private static final double UPRIGHT_PIVOT_TOLERANCE = 1.0;
   private static final double MAX_MOTOR_VALUE = 0.2;
   private static final double DAMPENER_CONSTANT = 0.00001;
   private static final double MAX_CUSHION_OUTPUT_VALUE = 0.2;
@@ -116,6 +117,13 @@ public class PivotTeleop extends CommandBase {
         cushion_motor_power = 0.0;
         joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
         joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
+    }
+
+    // If we're near the top, just let motor commands override.
+    if (Math.abs(revs - UPRIGHT_PIVOT_VALUE) <= UPRIGHT_PIVOT_TOLERANCE) {
+      cushion_motor_power = 0.0;
+      joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
+      joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
     }
 
     cushion_value = cushion_motor_power;
