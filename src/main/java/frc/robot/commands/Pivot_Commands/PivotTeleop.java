@@ -24,6 +24,7 @@ public class PivotTeleop extends CommandBase {
   private static final double DAMPENER_CONSTANT = 0.00001;
   private static final double MAX_CUSHION_OUTPUT_VALUE = 0.2;
   private static final double MAX_TOTAL_MOTOR_VALUE = MAX_CUSHION_OUTPUT_VALUE;
+  private static final double RPM_CUSHION_TOLERANCE = 10.0; // RPM
   private boolean faulted = false;
   private double commanded_value = 0.0;
   private double joystick_total_value = 0.0;
@@ -83,17 +84,17 @@ public class PivotTeleop extends CommandBase {
     double joystick_motor_power_towards_back = 0.0;
     double joystick_motor_power_towards_front = 0.0;
 
-    if (revs < UPRIGHT_PIVOT_VALUE && rpm < 0) {
+    if (revs < UPRIGHT_PIVOT_VALUE && rpm < -RPM_CUSHION_TOLERANCE) {
         // Case 1: Front of robot, falling towards front.
         joystick_motor_power_towards_back = 0.0;
         joystick_motor_power_towards_front = 0.0;
         cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
-    } else if (revs < UPRIGHT_PIVOT_VALUE && rpm >= 0) {
+    } else if (revs < UPRIGHT_PIVOT_VALUE && rpm >= -RPM_CUSHION_TOLERANCE) {
         // Case 2: Front of robot, moving upward toward back.
         cushion_motor_power = 0.0;
         joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
         joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
-    } else if (revs >= UPRIGHT_PIVOT_VALUE && rpm > 0) {
+    } else if (revs >= UPRIGHT_PIVOT_VALUE && rpm > RPM_CUSHION_TOLERANCE) {
         // Case 3: Back of robot, falling towards back.
         joystick_motor_power_towards_back = 0.0;
         joystick_motor_power_towards_front = 0.0;
@@ -111,8 +112,8 @@ public class PivotTeleop extends CommandBase {
 
     double total_power = cushion_motor_power + joystick_motor_power_towards_back + joystick_motor_power_towards_front;
     double clamped_total_power = MathUtil.clamp(total_power, -MAX_TOTAL_MOTOR_VALUE, MAX_TOTAL_MOTOR_VALUE);
-    // m_pivot.setMotorPower(clamped_total_power);
-    m_pivot.setMotorPower(0);
+    m_pivot.setMotorPower(clamped_total_power);
+    // m_pivot.setMotorPower(0);
     commanded_value = clamped_total_power;
   }
 
