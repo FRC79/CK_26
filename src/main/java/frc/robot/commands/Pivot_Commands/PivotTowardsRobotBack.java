@@ -7,11 +7,11 @@ package frc.robot.commands.Pivot_Commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Pivot;
 
-public class PivotUp extends CommandBase {
+public class PivotTowardsRobotBack extends CommandBase {
 
   private final Pivot m_Pivot;
   /** Creates a new PivotUp. */
-  public PivotUp(Pivot subsystem) {
+  public PivotTowardsRobotBack(Pivot subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_Pivot = subsystem;
     addRequirements(m_Pivot);

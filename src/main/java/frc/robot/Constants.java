@@ -70,12 +70,20 @@ public final class Constants {
     public static final int OPERATOR = 1;
 
     /* Controller Buttons */
-    public static final int TOGGLE_HIGH_PISTON_BUTTON = 3;
-    public static final int TOGGLE_LOW_PISTON_BUTTON = 4;
-    public static final int GRIP_BUTTON = 12;
-    public static final int PIVOT_UP_BUTTON = 3;
-    public static final int PIVOT_DOWN_BUTTON = 4;
-    public static final int EXTEND_BUTTON = 6;
-    public static final int RETRACT_BUTTON = 5;
+    // Extension buttons
+    public static final int EXTENSION_BUTTON = 5;
+    public static final int RETRACTION_BUTTON = 7;
+ 
+    // Pivot rotation buttons
+    public static final int PIVOT_TOWARDS_ROBOT_FRONT_BUTTON = 6;
+    public static final int PIVOT_TOWARDS_ROBOT_BACK_BUTTON = 4;
+
+    // Clamp buttons
+    public static final int CLAMP_OPEN_BUTTON = 0;
+    public static final int CLAMP_CLOSE_BUTTON = 3;
+
+    // Height pistons for pivot
+    public static final int HARD_STOP_HIGH_TOGGLE_BUTTON = 8;
+    public static final int HARD_STOP_LOW_TOGGLE_BUTTON = 9;
   }
 }
