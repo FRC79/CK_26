@@ -41,6 +41,6 @@ public class Extension extends SubsystemBase {
   }
 
   public double getExtensionDistance() {
-    return extendPot.get() * ExtensionConstants.POT_ANGLE_TO_EXTENSION_DISTANCE_CM;
+    return extendPot.get(); //extendPot.get() * ExtensionConstants.POT_ANGLE_TO_EXTENSION_DISTANCE_CM;
   }
 }

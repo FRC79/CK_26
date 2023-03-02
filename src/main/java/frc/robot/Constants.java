@@ -58,7 +58,7 @@ public final class Constants {
     public static final int EXTENSION_MOTOR_PORT = 5;
 
     /* Potentiometer Values */
-    public static final int EXTENSION_POT_PORT = 3;
+    public static final int EXTENSION_POT_PORT = 0;
     // // 360 degrees x 10 turns, scaling factor for the analog voltage
     public static final double RANGE_DEGREES = 3600;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
@@ -83,7 +83,7 @@ public final class Constants {
     public static final int PIVOT_TOWARDS_ROBOT_BACK_BUTTON = 4;
 
     // Clamp buttons
-    public static final int CLAMP_OPEN_BUTTON = 0;
+    public static final int CLAMP_OPEN_BUTTON = 2;
     public static final int CLAMP_CLOSE_BUTTON = 3;
 
     // Height pistons for pivot
