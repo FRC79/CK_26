@@ -86,9 +86,15 @@ public class PivotTeleop extends CommandBase {
 
     if (revs < UPRIGHT_PIVOT_VALUE && rpm < -RPM_CUSHION_TOLERANCE) {
         // Case 1: Front of robot, falling towards front.
-        joystick_motor_power_towards_back = 0.0;
-        joystick_motor_power_towards_front = 0.0;
-        cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
+        if (m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)) {
+            cushion_motor_power = 0.0;
+            joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
+            joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
+        } else {
+            joystick_motor_power_towards_back = 0.0;
+            joystick_motor_power_towards_front = 0.0;
+            cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
+        }
     } else if (revs < UPRIGHT_PIVOT_VALUE && rpm >= -RPM_CUSHION_TOLERANCE) {
         // Case 2: Front of robot, moving upward toward back.
         cushion_motor_power = 0.0;
@@ -96,10 +102,15 @@ public class PivotTeleop extends CommandBase {
         joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
     } else if (revs >= UPRIGHT_PIVOT_VALUE && rpm > RPM_CUSHION_TOLERANCE) {
         // Case 3: Back of robot, falling towards back.
-        joystick_motor_power_towards_back = 0.0;
-        joystick_motor_power_towards_front = 0.0;
-        cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
-
+        if (m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)) {
+          cushion_motor_power = 0.0;
+          joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
+          joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
+        } else {
+          joystick_motor_power_towards_back = 0.0;
+          joystick_motor_power_towards_front = 0.0;
+          cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
+        }
     } else {
         // Case 4: Back of robot, moving up towards front.
         cushion_motor_power = 0.0;
