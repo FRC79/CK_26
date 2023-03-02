@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
       SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters", m_Drivetrain.getFrontLeftDistanceMeters());
       SmartDashboard.putNumber("BackRightEncoderDistanceMeters", m_Drivetrain.getBackRightDistanceMeters());
+      SmartDashboard.putNumber("GyroPitchDegrees", m_Drivetrain.getGyroPitchAngleDegrees());
       m_timer.clear();
     }
   }

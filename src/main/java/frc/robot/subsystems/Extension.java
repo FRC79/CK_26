@@ -25,6 +25,7 @@ public class Extension extends SubsystemBase {
     extensionMotor.set(0.0);
   }
 
+
   public void setMotorPower(double power) {
     double MAX_POWER_MAG = 0.2;
     double power_to_apply = 0.0;

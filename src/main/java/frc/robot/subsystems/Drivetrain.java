@@ -80,6 +80,14 @@ public class Drivetrain extends SubsystemBase {
     return backRightEncoder.getDistance();
   }
 
+  public double getGyroPitchAngleDegrees() {
+    return gyro.getPitch();
+  }
+
+  public void resetGyro() {
+    gyro.reset();
+  }
+
   public void resetEncoders() {
     frontLeftEncoder.reset();
     backRightEncoder.reset();

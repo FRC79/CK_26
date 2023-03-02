@@ -28,6 +28,7 @@ public class TeleopDrive extends CommandBase {
   @Override
   public void initialize() {
     m_MecanumDrive.resetEncoders();
+    m_MecanumDrive.resetGyro();
     m_stick = new Joystick(OperatorConstants.DRIVER);
   }
 
