@@ -54,7 +54,7 @@ public class PivotTeleop extends CommandBase {
         return;
     }
 
-    if (!(-0.5 < revs && revs <= 0.5)) {
+    if (!(-5 < revs && revs <= 5)) {
         // Must have a proper starting position towards low end of the robot.
         System.out.println("FAULTED, POSITION INVALID");
         faulted = true;
