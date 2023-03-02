@@ -33,12 +33,19 @@ public final class Constants {
 
     public static final int[] HIGH_SOLENOID_PORT = new int[] { 0, 1 };
     public static final int[] LOW_SOLENOID_PORT = new int[] { 4, 5 };
+
+    public static final double kMAX_OUTPUT_MAG_VELOCITY = 0.2;
   }
 
   public static final class ExtensionConstants {
     /* Motor ports */
     public static final int EXTENSION_MOTOR_PORT = 5;
 
+    /* Potentiometer Values */
+    public static final int EXTENSION_POT_PORT = 3;
+    // // 360 degrees x 10 turns, scaling factor for the analog voltage
+    public static final double RANGE_DEGREES = 3600;
+    public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
   }
 
   public static final class ClampConstants {

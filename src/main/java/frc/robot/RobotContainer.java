@@ -43,6 +43,10 @@ public class RobotContainer {
     return m_Pivot;
   }
 
+  public Extension getExtension() {
+    return m_Extension;
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -58,7 +62,7 @@ public class RobotContainer {
 
     // new JoystickButton(operator, OperatorConstants.PIVOT_DOWN_BUTTON).whileTrue(new PivotDown(m_Pivot));
 
-    // new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(new Extend(m_Extension));
+    // new JoystickButton(operator, OperatorConstants.EXTEND_BUTTON).whileTrue(Pnew Extend(m_Extension));
 
     // new JoystickButton(operator, OperatorConstants.RETRACT_BUTTON).whileTrue(new Retract(m_Extension));
 

@@ -106,6 +106,7 @@ public class Robot extends TimedRobot {
       // SmartDashboard.putNumber("Output Max", m_robotContainer.getPivot().getPIDController().getOutputMax());
       // SmartDashboard.putNumber("Output Min", m_robotContainer.getPivot().getPIDController().getOutputMin());
       SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
+      SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
       m_timer.clear();
     }
   }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
@@ -16,6 +17,9 @@ public class Extension extends SubsystemBase {
 
   private final CANSparkMax extensionMotor = new CANSparkMax(ExtensionConstants.EXTENSION_MOTOR_PORT,
       CANSparkMaxLowLevel.MotorType.kBrushless);
+
+  private final AnalogPotentiometer extendPot = new AnalogPotentiometer(
+      ExtensionConstants.EXTENSION_POT_PORT, ExtensionConstants.RANGE_DEGREES);
 
   public Extension() {
     extensionMotor.set(0.0);
@@ -33,5 +37,9 @@ public class Extension extends SubsystemBase {
     }
 
     extensionMotor.set(power_to_apply);
+  }
+
+  public double getExtensionDistance() {
+    return extendPot.get() * ExtensionConstants.POT_ANGLE_TO_EXTENSION_DISTANCE_CM;
   }
 }
