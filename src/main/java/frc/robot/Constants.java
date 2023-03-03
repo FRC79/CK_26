@@ -70,13 +70,14 @@ public final class Constants {
   }
 
   public static class OperatorConstants {
-    public static final int DRIVER = 0;
-    public static final int OPERATOR = 1;
+    public static final int DRIVER_TRANSLATER = 0;
+    public static final int DRIVER_ROTATER = 1;
+    public static final int OPERATOR = 2;
 
     /* Controller Buttons */
     // Extension buttons
-    public static final int EXTENSION_BUTTON = 7;
-    public static final int RETRACTION_BUTTON = 5;
+    public static final int EXTENSION_BUTTON = 5;
+    public static final int RETRACTION_BUTTON = 7;
  
     // Pivot rotation buttons
     public static final int PIVOT_TOWARDS_ROBOT_FRONT_BUTTON = 8;

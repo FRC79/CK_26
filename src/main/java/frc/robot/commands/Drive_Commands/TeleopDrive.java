@@ -13,8 +13,9 @@ import frc.robot.Constants.*;
 public class TeleopDrive extends CommandBase {
 
   private Drivetrain m_MecanumDrive;
-  private Joystick m_stick;
-  //private Joystick m_stickr;
+  private Joystick m_translater;
+  private Joystick m_rotater;
+  //private Joystick m_translaterr;
   
   
   /** Creates a new TeleopDrive. */
@@ -29,15 +30,21 @@ public class TeleopDrive extends CommandBase {
   public void initialize() {
     m_MecanumDrive.resetEncoders();
     m_MecanumDrive.resetGyro();
-    m_stick = new Joystick(OperatorConstants.DRIVER);
+    m_translater = new Joystick(OperatorConstants.DRIVER_TRANSLATER);
+    m_rotater = new Joystick(OperatorConstants.DRIVER_ROTATER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double yStick = -1 * m_stick.getY();
-    double xStick = m_stick.getX();
-    double zStick = m_stick.getZ();
+    // double yStick = -1 * m_stick.getY();
+    // double xStick = m_stick.getX();
+    // double zStick = m_stick.getZ();
+
+    double yStick = -1 * m_translater.getY();
+    double xStick = m_translater.getX();
+    double zStick = m_rotater.getX();
+
     m_MecanumDrive.cartesianDrive(yStick, xStick, zStick);
   }
 
