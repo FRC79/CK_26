@@ -19,7 +19,7 @@ public class PivotTeleop extends CommandBase {
   private static final double MAX_ENCODER_VALUE = 43.7; // revolutions of the drive axel
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
   private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
-  private static final double UPRIGHT_PIVOT_VALUE = 24.0; // the value of the encoder when the pivot is at the top of rotation.
+  public static final double UPRIGHT_PIVOT_VALUE = 24.0; // the value of the encoder when the pivot is at the top of rotation.
   private static final double UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE = 6.0;
   private static final double UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE = 1.0;
   private static final double MAX_MOTOR_VALUE = 0.2;
@@ -57,12 +57,12 @@ public class PivotTeleop extends CommandBase {
         return;
     }
 
-    if (!(-5 < revs && revs <= 5)) {
-        // Must have a proper starting position towards low end of the robot.
-        System.out.println("FAULTED, POSITION INVALID");
-        faulted = true;
-        return;
-    }
+    // if (!(-5 < revs && revs <= 5)) {
+    //     // Must have a proper starting position towards low end of the robot.
+    //     System.out.println("FAULTED, POSITION INVALID");
+    //     faulted = true;
+    //     return;
+    // }
 
     if (!(-0.01 < rpm && rpm <= 0.01)) {
         // Should be fairly stationary at start.

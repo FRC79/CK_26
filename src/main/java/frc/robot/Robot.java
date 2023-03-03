@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +34,10 @@ public class Robot extends TimedRobot {
 
   private PivotTeleop m_pivotTeleop;
 
+  private UsbCamera camera1;
+  private UsbCamera camera2;
+  private VideoSink server;
+
   private Timer m_timer;
 
   /**
@@ -42,6 +50,12 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
+    camera1 = CameraServer.startAutomaticCapture(0);
+    camera2 = CameraServer.startAutomaticCapture(1);
+    server = CameraServer.getServer();
+
+    camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     m_robotContainer = new RobotContainer();
   }
 
@@ -118,22 +132,30 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (m_timer.isReady()) {
-      SmartDashboard.putNumber("Position (Revs)", m_robotContainer.getPivot().getEncoder().getPosition());
-      SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
-      SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
-      SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
-      SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
-          m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
-      SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
-          m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
-      SmartDashboard.putNumber("GyroPitchDegrees", m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
-      SmartDashboard.putNumber("CommandedPivotGravityAssist", m_pivotTeleop.getCommandedValue());
-      SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
-      SmartDashboard.putNumber("CushionMotorValue", m_pivotTeleop.getCushionMotorPower());
-      SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getJoystickTotalPower());
-      m_timer.clear();
+    // Switch camera source as we move the pivot.
+    if (m_robotContainer.getPivot().getEncoder().getPosition() > m_pivotTeleop.UPRIGHT_PIVOT_VALUE) {
+      server.setSource(camera2);
+    } else {
+      server.setSource(camera1);
     }
+
+    // DEBUG INFO
+    // if (m_timer.isReady()) {
+    //   SmartDashboard.putNumber("Position (Revs)", m_robotContainer.getPivot().getEncoder().getPosition());
+    //   SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
+    //   SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
+    //   SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
+    //   SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
+    //       m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+    //   SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
+    //       m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+    //   SmartDashboard.putNumber("GyroPitchDegrees", m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+    //   SmartDashboard.putNumber("CommandedPivotGravityAssist", m_pivotTeleop.getCommandedValue());
+    //   SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+    //   SmartDashboard.putNumber("CushionMotorValue", m_pivotTeleop.getCushionMotorPower());
+    //   SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getJoystickTotalPower());
+    //   m_timer.clear();
+    // }
   }
 
   @Override
