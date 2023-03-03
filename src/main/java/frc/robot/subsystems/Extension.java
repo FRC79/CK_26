@@ -4,14 +4,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
 
 public class Extension extends SubsystemBase {
 
@@ -25,6 +23,9 @@ public class Extension extends SubsystemBase {
     extensionMotor.set(0.0);
   }
 
+  public RelativeEncoder getEncoder() {
+    return extensionMotor.getEncoder();
+  }
 
   public void setMotorPower(double power) {
     extensionMotor.set(power);

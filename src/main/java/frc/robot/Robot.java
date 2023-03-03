@@ -15,11 +15,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Drive_Commands.TeleopDrive;
+import frc.robot.commands.Extension_Commands.ExtendOnTopLimit;
+import frc.robot.commands.Extension_Commands.RetractUntilPivotAngle;
+import frc.robot.commands.Clamp_Commands.OpenClamp;
 import frc.robot.commands.Drive_Commands.DriveForwardForTime;
 import frc.robot.commands.Pivot_Commands.PivotTeleop;
+import frc.robot.commands.Pivot_Commands.PivotToHighGoal;
 import frc.robot.physics.PivotController;
 import edu.wpi.first.wpilibj2.command.Commands;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,6 +50,7 @@ public class Robot extends TimedRobot {
 
   private static final String kDoNothingAuto = "Do Nothing";
   private static final String kDriveForwardForTime = "Drive Forward for Time";
+  private static final String kScoreHighGoal = "Score High Goal";
   private String m_autoSelected;
   private final SendableChooser<String> m_auto_chooser = new SendableChooser<>();
 
@@ -63,6 +67,7 @@ public class Robot extends TimedRobot {
 
     m_auto_chooser.setDefaultOption(kDoNothingAuto, kDoNothingAuto);
     m_auto_chooser.addOption(kDriveForwardForTime, kDriveForwardForTime);
+    m_auto_chooser.addOption(kScoreHighGoal, kScoreHighGoal);
     SmartDashboard.putData("Autonomous Mode Chooser", m_auto_chooser);
 
     camera1 = CameraServer.startAutomaticCapture(0);
@@ -103,7 +108,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() { if (m_pivotTeleop != null) {m_pivotTeleop.cancel();} }
+  public void disabledInit() {
+    if (m_pivotTeleop != null) {
+      m_pivotTeleop.cancel();
+    }
+  }
 
   @Override
   public void disabledPeriodic() {
@@ -121,6 +130,13 @@ public class Robot extends TimedRobot {
 
     if (m_autoSelected.equals(kDriveForwardForTime)) {
       m_autonomousCommand = new DriveForwardForTime(m_robotContainer.getDrivetrain(), 1000);
+    } else if (m_autoSelected.equals(kScoreHighGoal)) {
+      Command extendAndReleaseCommand = (new ExtendOnTopLimit(m_robotContainer.getPivot(),
+          m_robotContainer.getExtension())).andThen(new OpenClamp(m_robotContainer.getClamp()));
+      m_autonomousCommand = Commands.parallel(
+          new RetractUntilPivotAngle(m_robotContainer.getPivot(), m_robotContainer.getExtension()),
+          new PivotToHighGoal(m_robotContainer.getPivot(), m_robotContainer.getPivotController()),
+          extendAndReleaseCommand);
     } else {
       m_autonomousCommand = Commands.none();
     }
@@ -169,20 +185,28 @@ public class Robot extends TimedRobot {
 
     // DEBUG INFO
     // if (m_timer.isReady()) {
-    //   SmartDashboard.putNumber("Position (Revs)", m_robotContainer.getPivot().getEncoder().getPosition());
-    //   SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
-    //   SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
-    //   SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
-    //   SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
-    //       m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
-    //   SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
-    //       m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
-    //   SmartDashboard.putNumber("GyroPitchDegrees", m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
-    //   SmartDashboard.putNumber("CommandedPivotGravityAssist", m_pivotTeleop.getCommandedValue());
-    //   SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
-    //   SmartDashboard.putNumber("CushionMotorValue", m_pivotTeleop.getCushionMotorPower());
-    //   SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getTotalMotorCommanded());
-    //   m_timer.clear();
+    // SmartDashboard.putNumber("Position (Revs)",
+    // m_robotContainer.getPivot().getEncoder().getPosition());
+    // SmartDashboard.putNumber("Velocity (RPM)",
+    // m_robotContainer.getPivot().getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Current output",
+    // m_robotContainer.getPivot().getMotorOutput());
+    // SmartDashboard.putNumber("Extension Distance",
+    // m_robotContainer.getExtension().getExtensionDistance());
+    // SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
+    // m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+    // SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
+    // m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+    // SmartDashboard.putNumber("GyroPitchDegrees",
+    // m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+    // SmartDashboard.putNumber("CommandedPivotGravityAssist",
+    // m_pivotTeleop.getCommandedValue());
+    // SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+    // SmartDashboard.putNumber("CushionMotorValue",
+    // m_pivotTeleop.getCushionMotorPower());
+    // SmartDashboard.putNumber("JoystickPivotTotalValue",
+    // m_pivotTeleop.getTotalMotorCommanded());
+    // m_timer.clear();
     // }
   }
 
@@ -197,8 +221,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     if (m_timer.isReady()) {
-      for (int i=1; i < 12; i++) {
-        SmartDashboard.putBoolean("KrunchButton" + Integer.toString(i), m_robotContainer.getOperatorJoystick().getRawButton(i));
+      for (int i = 1; i < 12; i++) {
+        SmartDashboard.putBoolean("KrunchButton" + Integer.toString(i),
+            m_robotContainer.getOperatorJoystick().getRawButton(i));
       }
       m_timer.clear();
     }

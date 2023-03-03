@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -26,6 +27,8 @@ public class Pivot extends SubsystemBase {
       PneumaticsModuleType.CTREPCM, PivotConstants.HIGH_SOLENOID_PORT[0], PivotConstants.HIGH_SOLENOID_PORT[1]);
   private final DoubleSolenoid lowSolenoid = new DoubleSolenoid(
       PneumaticsModuleType.CTREPCM, PivotConstants.LOW_SOLENOID_PORT[0], PivotConstants.LOW_SOLENOID_PORT[1]);
+
+  private final DigitalInput highGoalLimit = new DigitalInput(PivotConstants.HIGH_GOAL_LIMIT_PORT);
 
   private String m_highSolenoidState = "Reverse";
   private String m_lowSolenoidState = "Reverse";
@@ -52,6 +55,10 @@ public class Pivot extends SubsystemBase {
 
   public RelativeEncoder getEncoder() {
     return pivotMotor.getEncoder();
+  }
+
+  public boolean highGoalTopLimitPressed() {
+    return highGoalLimit.get();
   }
 
   public void setHighSolenoidState(String state) {
