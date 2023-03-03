@@ -166,11 +166,18 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_timer = new Timer(100);
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    if (m_timer.isReady()) {
+      for (int i=1; i < 12; i++) {
+        SmartDashboard.putBoolean("KrunchButton" + Integer.toString(i), m_robotContainer.getOperatorJoystick().getRawButton(i));
+      }
+      m_timer.clear();
+    }
   }
 
   /** This function is called once when the robot is first started up. */

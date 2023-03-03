@@ -75,22 +75,22 @@ public final class Constants {
 
     /* Controller Buttons */
     // Extension buttons
-    public static final int EXTENSION_BUTTON = 5;
-    public static final int RETRACTION_BUTTON = 7;
+    public static final int EXTENSION_BUTTON = 7;
+    public static final int RETRACTION_BUTTON = 5;
  
     // Pivot rotation buttons
-    public static final int PIVOT_TOWARDS_ROBOT_FRONT_BUTTON = 6;
-    public static final int PIVOT_TOWARDS_ROBOT_BACK_BUTTON = 4;
+    public static final int PIVOT_TOWARDS_ROBOT_FRONT_BUTTON = 8;
+    public static final int PIVOT_TOWARDS_ROBOT_BACK_BUTTON = 6;
 
     // Clamp buttons
-    public static final int CLAMP_OPEN_BUTTON = 2;
-    public static final int CLAMP_CLOSE_BUTTON = 3;
+    public static final int CLAMP_OPEN_BUTTON = 1;
+    public static final int CLAMP_CLOSE_BUTTON = 4;
 
     // Height pistons for pivot
-    public static final int HARD_STOP_HIGH_TOGGLE_BUTTON = 8;
+    public static final int HARD_STOP_HIGH_TOGGLE_BUTTON = 10;
     public static final int HARD_STOP_LOW_TOGGLE_BUTTON = 9;
 
     // Slow mode for driving the wheels
-    public static final int SLOW_MODE_BUTTON = 1;
+    public static final int SLOW_MODE_BUTTON = 11;
   }
 }
