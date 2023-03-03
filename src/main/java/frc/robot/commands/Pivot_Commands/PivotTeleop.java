@@ -19,12 +19,13 @@ public class PivotTeleop extends CommandBase {
   private static final double MAX_ENCODER_VALUE = 43.7; // revolutions of the drive axel
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
   private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
-  public static final double UPRIGHT_PIVOT_VALUE = 24.0; // the value of the encoder when the pivot is at the top of rotation.
-  private static final double UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE = 6.0;
+  public static final double UPRIGHT_PIVOT_VALUE = 24.547; // the value of the encoder when the pivot is at the top of rotation.
+  private static final double UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE = 7.547;
   private static final double UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE = 1.0;
   private static final double MAX_MOTOR_VALUE = 0.2;
   private static final double DAMPENER_CONSTANT = 0.00001;
   private static final double MAX_CUSHION_OUTPUT_VALUE = 0.2;
+  private static final double FRONT_CUSHION_OUTPUT_SCALING = 0.75;
   private static final double MAX_TOTAL_MOTOR_VALUE = MAX_CUSHION_OUTPUT_VALUE;
   private static final double RPM_CUSHION_TOLERANCE = 10.0; // RPM
   private boolean faulted = false;
@@ -95,7 +96,7 @@ public class PivotTeleop extends CommandBase {
         } else {
             joystick_motor_power_towards_back = 0.0;
             joystick_motor_power_towards_front = 0.0;
-            cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
+            cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING, MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING);
         }
     } else if (revs < UPRIGHT_PIVOT_VALUE && rpm >= -RPM_CUSHION_TOLERANCE) {
         // Case 2: Front of robot, moving upward toward back.
