@@ -63,6 +63,7 @@ public class Drivetrain extends SubsystemBase {
     frontRightMotor.setInverted(true);
     backRightMotor.setInverted(true);
     m_robotDrive.setDeadband(0.05);
+    setMaxOutput(DriveConstants.FAST_MODE_DRIVE_POWER);
 
     frontLeftEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE_METERS);
     backRightEncoder.setDistancePerPulse(DriveConstants.ENCODER_DISTANCE_PER_PULSE_METERS);

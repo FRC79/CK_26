@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Pivot_Commands.*;
+import frc.robot.physics.PivotController;
 import frc.robot.commands.Clamp_Commands.*;
 import frc.robot.commands.Drive_Commands.ToggleSlowMode;
 import frc.robot.commands.Extension_Commands.*;
@@ -32,6 +33,7 @@ public class RobotContainer {
   private final Pivot m_Pivot = new Pivot();
   private final Extension m_Extension = new Extension();
   private final Clamp m_Clamp = new Clamp();
+  private final PivotController m_PivotController;
 
   // The operator's controller 
   public GenericHID operator = new Joystick(Constants.OperatorConstants.OPERATOR);
@@ -39,6 +41,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    m_PivotController = new PivotController(m_Pivot);
   }
 
   public Drivetrain getDrivetrain() {
@@ -47,6 +50,10 @@ public class RobotContainer {
 
   public Pivot getPivot() {
     return m_Pivot;
+  }
+
+  public PivotController getPivotController() {
+    return m_PivotController;
   }
 
   public Extension getExtension() {
@@ -71,11 +78,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
-    // NOTE: DO NOT USE THESE
-    // new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON).whileTrue(new PivotTowardsRobotFront(m_Pivot));
-    // new JoystickButton(operator, OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON).whileTrue(new PivotTowardsRobotBack(m_Pivot));
-
     // TESTED AND WORK WELL
     new JoystickButton(operator, OperatorConstants.EXTENSION_BUTTON).whileTrue(new Extend(m_Extension));
 

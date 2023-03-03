@@ -11,10 +11,15 @@ import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.commands.Drive_Commands.*;
+import frc.robot.commands.Drive_Commands.TeleopDrive;
+import frc.robot.commands.Drive_Commands.DriveForwardForTime;
 import frc.robot.commands.Pivot_Commands.PivotTeleop;
+import frc.robot.physics.PivotController;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,6 +45,11 @@ public class Robot extends TimedRobot {
 
   private Timer m_timer;
 
+  private static final String kDoNothingAuto = "Do Nothing";
+  private static final String kDriveForwardForTime = "Drive Forward for Time";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_auto_chooser = new SendableChooser<>();
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -50,6 +60,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
+
+    m_auto_chooser.setDefaultOption(kDoNothingAuto, kDoNothingAuto);
+    m_auto_chooser.addOption(kDriveForwardForTime, kDriveForwardForTime);
+    SmartDashboard.putData("Autonomous Mode Chooser", m_auto_chooser);
+
     camera1 = CameraServer.startAutomaticCapture(0);
     camera2 = CameraServer.startAutomaticCapture(1);
     camera1.setResolution(320, 240);
@@ -60,6 +75,7 @@ public class Robot extends TimedRobot {
 
     camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+
     m_robotContainer = new RobotContainer();
   }
 
@@ -99,7 +115,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autoSelected = m_auto_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
+
+    if (m_autoSelected.equals(kDriveForwardForTime)) {
+      m_autonomousCommand = new DriveForwardForTime(m_robotContainer.getDrivetrain(), 1000);
+    } else {
+      m_autonomousCommand = Commands.none();
+    }
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -119,7 +143,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain());
-    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot());
+    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getPivotController());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -137,7 +161,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Switch camera source as we move the pivot.
-    if (m_robotContainer.getPivot().getEncoder().getPosition() > m_pivotTeleop.UPRIGHT_PIVOT_VALUE) {
+    if (m_robotContainer.getPivot().getEncoder().getPosition() > PivotController.UPRIGHT_PIVOT_VALUE) {
       server.setSource(camera2);
     } else {
       server.setSource(camera1);
@@ -157,7 +181,7 @@ public class Robot extends TimedRobot {
     //   SmartDashboard.putNumber("CommandedPivotGravityAssist", m_pivotTeleop.getCommandedValue());
     //   SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
     //   SmartDashboard.putNumber("CushionMotorValue", m_pivotTeleop.getCushionMotorPower());
-    //   SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getJoystickTotalPower());
+    //   SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getTotalMotorCommanded());
     //   m_timer.clear();
     // }
   }
