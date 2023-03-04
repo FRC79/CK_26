@@ -62,6 +62,9 @@ public final class Constants {
     // // 360 degrees x 10 turns, scaling factor for the analog voltage
     public static final double RANGE_DEGREES = 3600;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
+
+    public static final double EXTEND_POWER = 0.5;
+    public static final double RETRACT_POWER = -EXTEND_POWER;
   }
 
   public static final class ClampConstants {
@@ -76,8 +79,8 @@ public final class Constants {
 
     /* Controller Buttons */
     // Extension buttons
-    public static final int EXTENSION_BUTTON = 5;
-    public static final int RETRACTION_BUTTON = 7;
+    public static final int EXTENSION_BUTTON = 7;
+    public static final int RETRACTION_BUTTON = 5;
  
     // Pivot rotation buttons
     public static final int PIVOT_TOWARDS_ROBOT_FRONT_BUTTON = 8;
