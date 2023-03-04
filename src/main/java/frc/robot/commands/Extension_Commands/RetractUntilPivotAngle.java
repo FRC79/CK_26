@@ -5,6 +5,7 @@
 package frc.robot.commands.Extension_Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ExtensionConstants;
 import frc.robot.subsystems.Extension;
 import frc.robot.subsystems.Pivot;
 
@@ -29,7 +30,7 @@ public class RetractUntilPivotAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_extension.setMotorPower(-0.5);
+    m_extension.setMotorPower(ExtensionConstants.RETRACT_POWER);
   }
 
   // Called once the command ends or is interrupted.

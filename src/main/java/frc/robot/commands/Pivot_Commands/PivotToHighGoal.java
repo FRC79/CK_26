@@ -11,7 +11,7 @@ import frc.robot.subsystems.Pivot;
 public class PivotToHighGoal extends CommandBase {
   private Pivot m_pivot;
   private PivotController m_PivotController;
-  private static final double BACKWARD_MOTOR_REQUEST = 0.2;
+  private static final double BACKWARD_MOTOR_REQUEST = PivotController.MAX_MOTOR_VALUE;
 
   /** Creates a new PivotToHighGoal. */
   public PivotToHighGoal(Pivot subsystem, PivotController controller) {

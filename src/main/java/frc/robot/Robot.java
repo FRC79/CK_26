@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Drive_Commands.TeleopDrive;
-import frc.robot.commands.Extension_Commands.ExtendOnTopLimit;
+import frc.robot.commands.Extension_Commands.ExtendOnBackSide;
 import frc.robot.commands.Extension_Commands.RetractUntilPivotAngle;
 import frc.robot.commands.Clamp_Commands.OpenClamp;
 import frc.robot.commands.Drive_Commands.DriveForwardForTime;
@@ -131,11 +131,23 @@ public class Robot extends TimedRobot {
     if (m_autoSelected.equals(kDriveForwardForTime)) {
       m_autonomousCommand = new DriveForwardForTime(m_robotContainer.getDrivetrain(), 1000);
     } else if (m_autoSelected.equals(kScoreHighGoal)) {
-      Command extendAndReleaseCommand = (new ExtendOnTopLimit(m_robotContainer.getPivot(),
-          m_robotContainer.getExtension())).andThen(new OpenClamp(m_robotContainer.getClamp()));
+      // Parallel chain command
+      Command retract_until_pivot_angle_command = new RetractUntilPivotAngle(m_robotContainer.getPivot(),
+          m_robotContainer.getExtension());
+
+      Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
+          m_robotContainer.getPivotController());
+
+      Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
+          m_robotContainer.getExtension());
+
+      Command open_clamp_command = new OpenClamp(m_robotContainer.getClamp());
+
+      Command extendAndReleaseCommand = extend_on_back_side_command.andThen(open_clamp_command);
+
       m_autonomousCommand = Commands.parallel(
-          new RetractUntilPivotAngle(m_robotContainer.getPivot(), m_robotContainer.getExtension()),
-          new PivotToHighGoal(m_robotContainer.getPivot(), m_robotContainer.getPivotController()),
+          retract_until_pivot_angle_command,
+          pivot_to_high_goal_command,
           extendAndReleaseCommand);
     } else {
       m_autonomousCommand = Commands.none();

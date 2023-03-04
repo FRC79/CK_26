@@ -6,19 +6,20 @@ package frc.robot.commands.Extension_Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Timer;
+import frc.robot.Constants.ExtensionConstants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.physics.PivotController;
 import frc.robot.subsystems.Extension;
 import frc.robot.subsystems.Pivot;
 
-public class ExtendOnTopLimit extends CommandBase {
+public class ExtendOnBackSide extends CommandBase {
+
+  private static final double REVS_EXTENSION_FULLY_EXTENDED = 6.0;
 
   private final Extension m_Extension;
   private final Pivot m_Pivot;
-  private Timer m_timer;
-  private boolean m_limitPressedOnce = false;
-  private static final double IS_MOVING_TOLERANCE_RPM = 0.5;
-  private static final int WARMUP_TIME_MS = 200;
   /** Creates a new Extend. */
-  public ExtendOnTopLimit(Pivot pivot, Extension extension) {
+  public ExtendOnBackSide(Pivot pivot, Extension extension) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_Pivot = pivot;
     m_Extension = extension;
@@ -30,20 +31,21 @@ public class ExtendOnTopLimit extends CommandBase {
   @Override
   public void initialize() {}
 
+  private boolean onBackSide() {
+    double revs_extension = m_Extension.getEncoder().getPosition();
+    return revs_extension > PivotController.UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE + PivotController.UPRIGHT_PIVOT_VALUE;
+  }
+
+  private boolean fullyExtended() {
+    double revs_extension = m_Extension.getEncoder().getPosition();
+    return revs_extension > REVS_EXTENSION_FULLY_EXTENDED;
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Pivot.highGoalTopLimitPressed()) {
-        if (!m_limitPressedOnce) {
-            // Timer to make sure we extend a bit before looking at zero velocity as our indicator of extension
-            m_timer = new Timer(WARMUP_TIME_MS);
-            m_timer.clear();
-        }
-        m_limitPressedOnce = true;
-    }
-
-    if (m_limitPressedOnce) {
-        m_Extension.setMotorPower(0.5);
+    if (onBackSide()) {
+        m_Extension.setMotorPower(ExtensionConstants.EXTEND_POWER);
     }
   }
 
@@ -56,22 +58,6 @@ public class ExtendOnTopLimit extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_timer == null) {
-        return false;
-    }
-
-    if (!m_timer.isReady()) {
-        return false;
-    }
-
-    double rpm = m_Extension.getEncoder().getVelocity();
-
-    // It's still moving.
-    if (Math.abs(rpm) > IS_MOVING_TOLERANCE_RPM) {
-        return false;
-    }
-
-    // It's gone all it can.
-    return true;
+    return onBackSide() && fullyExtended();
   }
 }
