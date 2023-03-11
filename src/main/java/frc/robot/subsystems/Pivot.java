@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -20,7 +20,7 @@ import frc.robot.Constants.*;
 
 public class Pivot extends PIDSubsystem {
 
-  private final WPI_VictorSPX pivotMotor = new WPI_VictorSPX(PivotConstants.PIVOT_MOTOR_PORT);
+  private final CANSparkMax pivotMotor = new CANSparkMax(PivotConstants.PIVOT_MOTOR_PORT, MotorType.kBrushless);
   private final AnalogPotentiometer pivotPot = new AnalogPotentiometer(
   PivotConstants.PIVOT_POT_PORT, PivotConstants.POT_RANGE_DEGREES);
   private final DigitalInput maxAngleLimitSwitch = new DigitalInput(PivotConstants.MAX_ANGLE_LIMIT_PORT);
@@ -47,15 +47,15 @@ public class Pivot extends PIDSubsystem {
   public void setMotorPower(double power) {
     if (power > 0){
       if (maxAngleLimitSwitch.get()) {
-        pivotMotor.set(ControlMode.PercentOutput, 0);
+        pivotMotor.set(0);
       } else{
-        pivotMotor.set(ControlMode.PercentOutput, power);
+        pivotMotor.set(power);
       }
     } else {
       if (minAngleLimitSwitch.get()) {
-        pivotMotor.set(ControlMode.PercentOutput, 0);
+        pivotMotor.set(0);
       } else {
-        pivotMotor.set(ControlMode.PercentOutput, power);
+        pivotMotor.set(power);
       }
     }
   }

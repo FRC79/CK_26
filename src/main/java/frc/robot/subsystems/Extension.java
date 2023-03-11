@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,7 +14,7 @@ import frc.robot.Constants.*;
 
 public class Extension extends SubsystemBase {
 
-  private final WPI_VictorSPX extensionMotor = new WPI_VictorSPX(ExtensionConstants.EXTENSION_MOTOR_PORT);
+  private final CANSparkMax extensionMotor = new CANSparkMax(ExtensionConstants.EXTENSION_MOTOR_PORT, MotorType.kBrushless);
   private final AnalogPotentiometer extendPot = new AnalogPotentiometer(
   ExtensionConstants.EXTENSION_POT_PORT, ExtensionConstants.RANGE_DEGREES);
   private final DigitalInput maxExtensionLimitSwitch = new DigitalInput(ExtensionConstants.MAX_EXTENSION_LIMIT_PORT);
@@ -27,15 +27,15 @@ public class Extension extends SubsystemBase {
   public void setMotorPower(double power) {
     if (power > 0){
       if (maxExtensionLimitSwitch.get()) {
-        extensionMotor.set(ControlMode.PercentOutput, 0);
+        extensionMotor.set(0);
       } else{
-        extensionMotor.set(ControlMode.PercentOutput, power);
+        extensionMotor.set(power);
       }
     } else {
       if (minExtensionLimitSwitch.get()) {
-        extensionMotor.set(ControlMode.PercentOutput, 0);
+        extensionMotor.set(0);
       } else {
-        extensionMotor.set(ControlMode.PercentOutput, power);
+        extensionMotor.set(power);
       }
     }
   }
