@@ -64,6 +64,8 @@ public final class Constants {
     public static final int EXTENSION_POT_PORT = 0;
     // // 360 degrees x 10 turns, scaling factor for the analog voltage
     public static final double RANGE_DEGREES = 3600;
+    public static final double FULL_EXTEND_POT_VALUE = 700;
+    public static final double FULL_RETRACT_POT_VALUE = 3600;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
 
     public static final double EXTEND_POWER = 0.7;

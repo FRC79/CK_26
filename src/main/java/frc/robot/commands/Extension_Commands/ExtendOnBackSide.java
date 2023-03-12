@@ -5,16 +5,12 @@
 package frc.robot.commands.Extension_Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Timer;
 import frc.robot.Constants.ExtensionConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.physics.PivotController;
 import frc.robot.subsystems.Extension;
 import frc.robot.subsystems.Pivot;
 
 public class ExtendOnBackSide extends CommandBase {
-
-  private static final double REVS_EXTENSION_FULLY_EXTENDED = 6.0;
 
   private final Extension m_Extension;
   private final Pivot m_Pivot;
@@ -36,11 +32,6 @@ public class ExtendOnBackSide extends CommandBase {
     return revs_extension > PivotController.UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE + PivotController.UPRIGHT_PIVOT_VALUE;
   }
 
-  private boolean fullyExtended() {
-    double revs_extension = m_Extension.getEncoder().getPosition();
-    return revs_extension > REVS_EXTENSION_FULLY_EXTENDED;
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -58,6 +49,6 @@ public class ExtendOnBackSide extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return onBackSide() && fullyExtended();
+    return onBackSide() && m_Extension.isFullyExtended();
   }
 }

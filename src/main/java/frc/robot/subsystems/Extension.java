@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
@@ -40,7 +41,19 @@ public class Extension extends SubsystemBase {
     extensionMotor.set(power);
   }
 
-  public double getExtensionDistance() {
-    return extendPot.get(); // extendPot.get() * ExtensionConstants.POT_ANGLE_TO_EXTENSION_DISTANCE_CM;
+  public double getPot() {
+    return extendPot.get();
+  }
+
+  public boolean isFullyExtended() {
+    return Math.abs(getClampedPot() - ExtensionConstants.FULL_EXTEND_POT_VALUE) < 1e-1;
+  }
+
+  public boolean isFullyRetracted() {
+    return Math.abs(getClampedPot() - ExtensionConstants.FULL_RETRACT_POT_VALUE) < 1e-1;
+  }
+
+  public double getClampedPot() {
+    return MathUtil.clamp(getPot(), ExtensionConstants.FULL_EXTEND_POT_VALUE, ExtensionConstants.FULL_RETRACT_POT_VALUE);
   }
 }

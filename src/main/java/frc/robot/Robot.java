@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Drive_Commands.TeleopDrive;
 import frc.robot.commands.Extension_Commands.ExtendOnBackSide;
+import frc.robot.commands.Extension_Commands.RetractForTime;
 import frc.robot.commands.Extension_Commands.RetractUntilPivotAngle;
 import frc.robot.commands.Clamp_Commands.OpenClamp;
 import frc.robot.commands.DeployableWheels_Commands.DeployableWheelsTeleop;
@@ -150,8 +151,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand = Commands.none();
     } else if (m_autoSelected.equals(kScoreHighGoal)) {
       // Parallel chain command
-      // Command retract_until_pivot_angle_command = new RetractUntilPivotAngle(m_robotContainer.getPivot(),
-      //     m_robotContainer.getExtension());
+      // Command retract_for_time_command = new RetractForTime(m_robotContainer.getExtension());
 
       // Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
       //     m_robotContainer.getPivotController());
@@ -164,7 +164,7 @@ public class Robot extends TimedRobot {
       // Command extendAndReleaseCommand = extend_on_back_side_command.andThen(open_clamp_command);
 
       // m_autonomousCommand = Commands.parallel(
-      //     retract_until_pivot_angle_command,
+      //     retract_for_time_command,
       //     pivot_to_high_goal_command,
       //     extendAndReleaseCommand);
       m_autonomousCommand = Commands.none();
