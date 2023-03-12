@@ -146,26 +146,28 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + m_autoSelected);
 
     if (m_autoSelected.equals(kDriveForwardForTime)) {
-      m_autonomousCommand = new DriveForwardForTime(m_robotContainer.getDrivetrain(), 1000);
+      // m_autonomousCommand = new DriveForwardForTime(m_robotContainer.getDrivetrain(), 1000);
+      m_autonomousCommand = Commands.none();
     } else if (m_autoSelected.equals(kScoreHighGoal)) {
       // Parallel chain command
-      Command retract_until_pivot_angle_command = new RetractUntilPivotAngle(m_robotContainer.getPivot(),
-          m_robotContainer.getExtension());
+      // Command retract_until_pivot_angle_command = new RetractUntilPivotAngle(m_robotContainer.getPivot(),
+      //     m_robotContainer.getExtension());
 
-      Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
-          m_robotContainer.getPivotController());
+      // Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
+      //     m_robotContainer.getPivotController());
 
-      Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
-          m_robotContainer.getExtension());
+      // Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
+      //     m_robotContainer.getExtension());
 
-      Command open_clamp_command = new OpenClamp(m_robotContainer.getClamp());
+      // Command open_clamp_command = new OpenClamp(m_robotContainer.getClamp());
 
-      Command extendAndReleaseCommand = extend_on_back_side_command.andThen(open_clamp_command);
+      // Command extendAndReleaseCommand = extend_on_back_side_command.andThen(open_clamp_command);
 
-      m_autonomousCommand = Commands.parallel(
-          retract_until_pivot_angle_command,
-          pivot_to_high_goal_command,
-          extendAndReleaseCommand);
+      // m_autonomousCommand = Commands.parallel(
+      //     retract_until_pivot_angle_command,
+      //     pivot_to_high_goal_command,
+      //     extendAndReleaseCommand);
+      m_autonomousCommand = Commands.none();
     } else {
       m_autonomousCommand = Commands.none();
     }
@@ -174,11 +176,17 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_timer = new Timer(100);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    if (m_timer.isReady()) {
+      SmartDashboard.putString("RunningAutonomous", m_autoSelected);
+      m_timer.clear();
+    }
   }
 
   @Override
