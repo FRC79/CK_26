@@ -31,8 +31,8 @@ public final class Constants {
     public static final double SLOW_MODE_DRIVE_POWER = 0.5;
 
     // Encoders
-    public static final int[] FL_ENCODER_PORTS = new int[] {1, 0};
-    public static final int[] BR_ENCODER_PORTS = new int[] {9, 8};
+    public static final int[] FL_ENCODER_PORTS = new int[] { 1, 0 };
+    public static final int[] BR_ENCODER_PORTS = new int[] { 9, 8 };
 
     public static final boolean FL_ENCODER_REVERSED = false;
     public static final boolean BR_ENCODER_REVERSED = true;
@@ -40,7 +40,8 @@ public final class Constants {
     // therefore pi * 0.1524 == 0.478
     public static final double DRIVE_ENCODER_CPR = 1024; // Clicks per rev, 2^10
     public static final double WHEEL_DIAMETER_METERS = 0.1524; // 6" wheels
-    public static final double ENCODER_DISTANCE_PER_PULSE_METERS = (WHEEL_DIAMETER_METERS * Math.PI)/ DRIVE_ENCODER_CPR;
+    public static final double ENCODER_DISTANCE_PER_PULSE_METERS = (WHEEL_DIAMETER_METERS * Math.PI)
+        / DRIVE_ENCODER_CPR;
   }
 
   public static final class PivotConstants {
@@ -65,13 +66,22 @@ public final class Constants {
     public static final double RANGE_DEGREES = 3600;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
 
-    public static final double EXTEND_POWER = 0.5;
+    public static final double EXTEND_POWER = 0.7;
     public static final double RETRACT_POWER = -EXTEND_POWER;
   }
 
   public static final class ClampConstants {
     /* Solenoid port */
     public static final int[] CLAMP_SOLENOID_PORT = new int[] { 6, 7 };
+  }
+
+  public static final class DeployableWheelsConstants {
+    // The teleop is 135 seconds, we want to allow the wheels to deploy at 100
+    // seconds (35 seconds before match end).
+    // public static final int WAIT_TIME_ENDGAME_MS = 100 * 1000; // 100 seconds * 1000 ms per second
+    public static final int WAIT_TIME_ENDGAME_MS = 10;
+
+    public static final int TRACTION_WHEEL_MOTOR_PORT = 6;
   }
 
   public static class OperatorConstants {
@@ -83,7 +93,7 @@ public final class Constants {
     // Extension buttons
     public static final int EXTENSION_BUTTON = 7;
     public static final int RETRACTION_BUTTON = 5;
- 
+
     // Pivot rotation buttons
     public static final int PIVOT_TOWARDS_ROBOT_FRONT_BUTTON = 8;
     public static final int PIVOT_TOWARDS_ROBOT_BACK_BUTTON = 6;

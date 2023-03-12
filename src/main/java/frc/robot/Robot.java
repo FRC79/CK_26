@@ -18,6 +18,7 @@ import frc.robot.commands.Drive_Commands.TeleopDrive;
 import frc.robot.commands.Extension_Commands.ExtendOnBackSide;
 import frc.robot.commands.Extension_Commands.RetractUntilPivotAngle;
 import frc.robot.commands.Clamp_Commands.OpenClamp;
+import frc.robot.commands.DeployableWheels_Commands.DeployableWheelsTeleop;
 import frc.robot.commands.Drive_Commands.DriveForwardForTime;
 import frc.robot.commands.Pivot_Commands.PivotTeleop;
 import frc.robot.commands.Pivot_Commands.PivotToHighGoal;
@@ -39,8 +40,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private TeleopDrive m_TeleopDrive;
-
   private PivotTeleop m_pivotTeleop;
+  private DeployableWheelsTeleop m_DeployableWheelsTeleop;
 
   private UsbCamera camera1;
   private UsbCamera camera2;
@@ -111,7 +112,21 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     if (m_pivotTeleop != null) {
       m_pivotTeleop.cancel();
+      m_pivotTeleop = null;
     }
+
+    if (m_DeployableWheelsTeleop != null) {
+      m_DeployableWheelsTeleop.cancel();
+      m_DeployableWheelsTeleop = null;
+    }
+
+    if (m_TeleopDrive != null) {
+      m_TeleopDrive.cancel();
+      m_TeleopDrive = null;
+    }
+
+    // For easy access to robot.
+    m_robotContainer.getExtension().setCoastMode();
   }
 
   @Override
@@ -124,6 +139,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.getExtension().setBrakeMode();
+
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autoSelected = m_auto_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
@@ -170,17 +187,19 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain());
-    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getPivotController());
+    m_robotContainer.getExtension().setBrakeMode();
+
+    m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain(), m_robotContainer.getTranslatorJoystick(), m_robotContainer.getRotaterJoystick());
+    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getPivotController(), m_robotContainer.getOperatorJoystick());
+    m_DeployableWheelsTeleop = new DeployableWheelsTeleop(m_robotContainer.getDeployableWheels(), m_robotContainer.getTranslatorJoystick());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
     m_TeleopDrive.schedule();
-
-    m_pivotTeleop.init(m_robotContainer.getOperatorJoystick());
     m_pivotTeleop.schedule();
+    m_DeployableWheelsTeleop.schedule();
 
     m_timer = new Timer(100);
   }
@@ -188,13 +207,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // Switch camera source as we move the pivot.
-    if (m_robotContainer.getPivot().getEncoder().getPosition() > PivotController.UPRIGHT_PIVOT_VALUE) {
-      server.setSource(camera2);
-    } else {
-      server.setSource(camera1);
-    }
-
     // DEBUG INFO
     // if (m_timer.isReady()) {
     // SmartDashboard.putNumber("Position (Revs)",

@@ -34,6 +34,11 @@ public class RobotContainer {
   private final Extension m_Extension = new Extension();
   private final Clamp m_Clamp = new Clamp();
   private final PivotController m_PivotController;
+  private final DeployableWheels m_DeployableWheels = new DeployableWheels();
+
+  // Driving joysticks
+  private final Joystick m_translater = new Joystick(OperatorConstants.DRIVER_TRANSLATER);
+  private final Joystick m_rotater = new Joystick(OperatorConstants.DRIVER_ROTATER);
 
   // The operator's controller 
   public GenericHID operator = new Joystick(Constants.OperatorConstants.OPERATOR);
@@ -62,6 +67,18 @@ public class RobotContainer {
 
   public Clamp getClamp() {
     return m_Clamp;
+  }
+
+  public DeployableWheels getDeployableWheels() {
+    return m_DeployableWheels;
+  }
+
+  public Joystick getTranslatorJoystick() {
+    return m_translater;
+  }
+
+  public Joystick getRotaterJoystick() {
+    return m_rotater;
   }
 
   public GenericHID getOperatorJoystick() {

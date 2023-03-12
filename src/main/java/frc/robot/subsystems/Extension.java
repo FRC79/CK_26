@@ -10,6 +10,7 @@ import frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Extension extends SubsystemBase {
 
@@ -23,6 +24,14 @@ public class Extension extends SubsystemBase {
     extensionMotor.set(0.0);
   }
 
+  public void setCoastMode() {
+    extensionMotor.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void setBrakeMode() {
+    extensionMotor.setIdleMode(IdleMode.kBrake);
+  }
+
   public RelativeEncoder getEncoder() {
     return extensionMotor.getEncoder();
   }
@@ -32,6 +41,6 @@ public class Extension extends SubsystemBase {
   }
 
   public double getExtensionDistance() {
-    return extendPot.get(); //extendPot.get() * ExtensionConstants.POT_ANGLE_TO_EXTENSION_DISTANCE_CM;
+    return extendPot.get(); // extendPot.get() * ExtensionConstants.POT_ANGLE_TO_EXTENSION_DISTANCE_CM;
   }
 }

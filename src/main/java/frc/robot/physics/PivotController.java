@@ -11,11 +11,12 @@ import frc.robot.subsystems.Pivot;
 public class PivotController {
 
   private Pivot m_pivot;
-  
-  private static final double MAX_ENCODER_VALUE = 43.7; // revolutions of the drive axel
+
+  private static final double MAX_ENCODER_VALUE = 34.85; // revolutions of the drive axel
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
   private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
-  public static final double UPRIGHT_PIVOT_VALUE = 24.547; // the value of the encoder when the pivot is at the top of rotation.
+  public static final double UPRIGHT_PIVOT_VALUE = 23.64; // the value of the encoder when the pivot is at the top of
+                                                          // rotation.
   public static final double UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE = 14.547;
   public static final double UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE = 3.0;
   public static final double MAX_MOTOR_VALUE = 0.3;
@@ -35,30 +36,30 @@ public class PivotController {
     m_pivot = subsystem;
   }
 
-//   public bool isStartStatusOk() { 
-//     double revs = m_pivot.getEncoder().getPosition();
-//     double rpm = m_pivot.getEncoder().getVelocity();
+  // public bool isStartStatusOk() {
+  // double revs = m_pivot.getEncoder().getPosition();
+  // double rpm = m_pivot.getEncoder().getVelocity();
 
-//     // if (!(-5 < revs && revs <= 5)) {
-//     //     // Must have a proper starting position towards low end of the robot.
-//     //     System.out.println("FAULTED, POSITION INVALID");
-//     //     faulted = true;
-//     //     return false;
-//     // }
+  // // if (!(-5 < revs && revs <= 5)) {
+  // // // Must have a proper starting position towards low end of the robot.
+  // // System.out.println("FAULTED, POSITION INVALID");
+  // // faulted = true;
+  // // return false;
+  // // }
 
-//     // if (!(-0.01 < rpm && rpm <= 0.01)) {
-//     //     // Should be fairly stationary at start.
-//     //     System.out.println("FAULTED, VELOCITY INVALID");
-//     //     faulted = true;
-//     //     return false;
-//     // }
+  // // if (!(-0.01 < rpm && rpm <= 0.01)) {
+  // // // Should be fairly stationary at start.
+  // // System.out.println("FAULTED, VELOCITY INVALID");
+  // // faulted = true;
+  // // return false;
+  // // }
 
-//     return true;
-//    }
+  // return true;
+  // }
 
   public double controlLaw(double forward_motor_request, double backward_motor_request) {
     if (faulted) {
-        return 0.0;
+      return 0.0;
     }
 
     double revs = m_pivot.getEncoder().getPosition();
@@ -69,37 +70,40 @@ public class PivotController {
     double front_motor_commanded = 0.0;
 
     if (revs < UPRIGHT_PIVOT_VALUE && rpm < -RPM_CUSHION_TOLERANCE) {
-        // Case 1: Front of robot, falling towards front.
-        if (Math.abs(backward_motor_request) > 0) {
-            cushion_motor_power = 0.0;
-            back_motor_commanded = backward_motor_request;
-            front_motor_commanded = forward_motor_request;
-        } else {
-            back_motor_commanded = 0.0;
-            front_motor_commanded = 0.0;
-            cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING, MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING);
-        }
+      // Case 1: Front of robot, falling towards front.
+      if (Math.abs(backward_motor_request) > 0) {
+        cushion_motor_power = 0.0;
+        back_motor_commanded = backward_motor_request;
+        front_motor_commanded = forward_motor_request;
+      } else {
+        back_motor_commanded = 0.0;
+        front_motor_commanded = 0.0;
+        cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm,
+            -MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING,
+            MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING);
+      }
     } else if (revs < UPRIGHT_PIVOT_VALUE && rpm >= -RPM_CUSHION_TOLERANCE) {
-        // Case 2: Front of robot, moving upward toward back.
-        cushion_motor_power = 0.0;
-        back_motor_commanded = backward_motor_request;
-        front_motor_commanded = forward_motor_request;
+      // Case 2: Front of robot, moving upward toward back.
+      cushion_motor_power = 0.0;
+      back_motor_commanded = backward_motor_request;
+      front_motor_commanded = forward_motor_request;
     } else if (revs >= UPRIGHT_PIVOT_VALUE && rpm > RPM_CUSHION_TOLERANCE) {
-        // Case 3: Back of robot, falling towards back.
-        if (Math.abs(forward_motor_request) > 0) {
-          cushion_motor_power = 0.0;
-          back_motor_commanded = backward_motor_request;
-          front_motor_commanded = forward_motor_request;
-        } else {
-          back_motor_commanded = 0.0;
-          front_motor_commanded = 0.0;
-          cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
-        }
-    } else {
-        // Case 4: Back of robot, moving up towards front.
+      // Case 3: Back of robot, falling towards back.
+      if (Math.abs(forward_motor_request) > 0) {
         cushion_motor_power = 0.0;
         back_motor_commanded = backward_motor_request;
         front_motor_commanded = forward_motor_request;
+      } else {
+        back_motor_commanded = 0.0;
+        front_motor_commanded = 0.0;
+        cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE,
+            MAX_CUSHION_OUTPUT_VALUE);
+      }
+    } else {
+      // Case 4: Back of robot, moving up towards front.
+      cushion_motor_power = 0.0;
+      back_motor_commanded = backward_motor_request;
+      front_motor_commanded = forward_motor_request;
     }
 
     // If we're near the top, just let joystick motor commands override.
@@ -118,7 +122,7 @@ public class PivotController {
     double clamped_total_power = MathUtil.clamp(total_power, -MAX_TOTAL_MOTOR_VALUE, MAX_TOTAL_MOTOR_VALUE);
     commanded_value = clamped_total_power;
     return clamped_total_power;
-}
+  }
 
   public boolean getFaulted() {
     return faulted;

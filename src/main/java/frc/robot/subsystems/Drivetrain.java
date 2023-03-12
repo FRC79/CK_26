@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
 
-  // TODO: (Need to fix)
   /* Left Motors */
   private final WPI_TalonSRX frontLeftMotor = new WPI_TalonSRX(DriveConstants.FL_MOTOR_PORT);
   private final WPI_VictorSPX backLeftMotor = new WPI_VictorSPX(DriveConstants.BL_MOTOR_PORT);
