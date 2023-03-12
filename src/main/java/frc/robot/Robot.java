@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.commands.DeployableWheels_Commands.DeployableWheelsTeleop;
 import frc.robot.commands.Drive_Commands.*;
 import frc.robot.commands.Pivot_Commands.PivotTeleop;
 
@@ -31,8 +31,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private TeleopDrive m_TeleopDrive;
-
   private PivotTeleop m_pivotTeleop;
+  private DeployableWheelsTeleop m_DeployableWheelsTeleop;
 
   private UsbCamera camera1;
   private UsbCamera camera2;
@@ -87,7 +87,22 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() { if (m_pivotTeleop != null) {m_pivotTeleop.cancel();} }
+  public void disabledInit() {
+    if (m_pivotTeleop != null) {
+      m_pivotTeleop.cancel();
+      m_pivotTeleop = null;
+    }
+
+    if (m_DeployableWheelsTeleop != null) {
+      m_DeployableWheelsTeleop.cancel();
+      m_DeployableWheelsTeleop = null;
+    }
+
+    if (m_TeleopDrive != null) {
+      m_TeleopDrive.cancel();
+      m_TeleopDrive = null;
+    }
+  }
 
   @Override
   public void disabledPeriodic() {
@@ -118,17 +133,19 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain());
-    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot());
+    m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain(), m_robotContainer.getTranslatorJoystick(),
+        m_robotContainer.getRotaterJoystick());
+    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getOperatorJoystick());
+    m_DeployableWheelsTeleop = new DeployableWheelsTeleop(m_robotContainer.getDeployableWheels(),
+        m_robotContainer.getTranslatorJoystick());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
     m_TeleopDrive.schedule();
-
-    m_pivotTeleop.init(m_robotContainer.getOperatorJoystick());
     m_pivotTeleop.schedule();
+    m_DeployableWheelsTeleop.schedule();
 
     m_timer = new Timer(100);
   }
@@ -136,29 +153,30 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // Switch camera source as we move the pivot.
-    if (m_robotContainer.getPivot().getEncoder().getPosition() > m_pivotTeleop.UPRIGHT_PIVOT_VALUE) {
-      server.setSource(camera2);
-    } else {
-      server.setSource(camera1);
-    }
-
     // DEBUG INFO
     // if (m_timer.isReady()) {
-    //   SmartDashboard.putNumber("Position (Revs)", m_robotContainer.getPivot().getEncoder().getPosition());
-    //   SmartDashboard.putNumber("Velocity (RPM)", m_robotContainer.getPivot().getEncoder().getVelocity());
-    //   SmartDashboard.putNumber("Current output", m_robotContainer.getPivot().getMotorOutput());
-    //   SmartDashboard.putNumber("Extension Distance", m_robotContainer.getExtension().getExtensionDistance());
-    //   SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
-    //       m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
-    //   SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
-    //       m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
-    //   SmartDashboard.putNumber("GyroPitchDegrees", m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
-    //   SmartDashboard.putNumber("CommandedPivotGravityAssist", m_pivotTeleop.getCommandedValue());
-    //   SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
-    //   SmartDashboard.putNumber("CushionMotorValue", m_pivotTeleop.getCushionMotorPower());
-    //   SmartDashboard.putNumber("JoystickPivotTotalValue", m_pivotTeleop.getJoystickTotalPower());
-    //   m_timer.clear();
+    // SmartDashboard.putNumber("Position (Revs)",
+    // m_robotContainer.getPivot().getEncoder().getPosition());
+    // SmartDashboard.putNumber("Velocity (RPM)",
+    // m_robotContainer.getPivot().getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Current output",
+    // m_robotContainer.getPivot().getMotorOutput());
+    // SmartDashboard.putNumber("Extension Distance",
+    // m_robotContainer.getExtension().getExtensionDistance());
+    // SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
+    // m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+    // SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
+    // m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+    // SmartDashboard.putNumber("GyroPitchDegrees",
+    // m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+    // SmartDashboard.putNumber("CommandedPivotGravityAssist",
+    // m_pivotTeleop.getCommandedValue());
+    // SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+    // SmartDashboard.putNumber("CushionMotorValue",
+    // m_pivotTeleop.getCushionMotorPower());
+    // SmartDashboard.putNumber("JoystickPivotTotalValue",
+    // m_pivotTeleop.getJoystickTotalPower());
+    // m_timer.clear();
     // }
   }
 
@@ -173,8 +191,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     if (m_timer.isReady()) {
-      for (int i=1; i < 12; i++) {
-        SmartDashboard.putBoolean("KrunchButton" + Integer.toString(i), m_robotContainer.getOperatorJoystick().getRawButton(i));
+      for (int i = 1; i < 12; i++) {
+        SmartDashboard.putBoolean("KrunchButton" + Integer.toString(i),
+            m_robotContainer.getOperatorJoystick().getRawButton(i));
       }
       m_timer.clear();
     }

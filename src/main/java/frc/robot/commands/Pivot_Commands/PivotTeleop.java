@@ -36,14 +36,11 @@ public class PivotTeleop extends CommandBase {
 // Case 1) 
 
   /** Creates a new PivotTeleop. */
-  public PivotTeleop(Pivot subsystem) {
+  public PivotTeleop(Pivot subsystem, GenericHID operator_joystick) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_pivot = subsystem;
-    addRequirements(m_pivot);
-  }
-
-  public void init(GenericHID operator_joystick) {
     m_gamepad = operator_joystick;
+    addRequirements(m_pivot);
   }
 
   // Called when the command is initially scheduled.

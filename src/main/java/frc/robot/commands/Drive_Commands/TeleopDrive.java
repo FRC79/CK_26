@@ -19,9 +19,11 @@ public class TeleopDrive extends CommandBase {
   
   
   /** Creates a new TeleopDrive. */
-  public TeleopDrive(Drivetrain subsystem) {
+  public TeleopDrive(Drivetrain subsystem, Joystick translator, Joystick rotater) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_MecanumDrive = subsystem;
+    m_translater = translator;
+    m_rotater = rotater;
     addRequirements(m_MecanumDrive);
   }
 
@@ -30,8 +32,6 @@ public class TeleopDrive extends CommandBase {
   public void initialize() {
     m_MecanumDrive.resetEncoders();
     m_MecanumDrive.resetGyro();
-    m_translater = new Joystick(OperatorConstants.DRIVER_TRANSLATER);
-    m_rotater = new Joystick(OperatorConstants.DRIVER_ROTATER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
