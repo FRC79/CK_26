@@ -20,7 +20,7 @@ import com.revrobotics.SparkMaxPIDController;
 
 public class Pivot extends SubsystemBase {
 
-  private final CANSparkMax pivotMotor = new CANSparkMax(PivotConstants.PIVOT_MOTOR_PORT,
+  private CANSparkMax pivotMotor = new CANSparkMax(PivotConstants.PIVOT_MOTOR_PORT,
       CANSparkMaxLowLevel.MotorType.kBrushless);
   private final DoubleSolenoid highSolenoid = new DoubleSolenoid(
       PneumaticsModuleType.CTREPCM, PivotConstants.HIGH_SOLENOID_PORT[0], PivotConstants.HIGH_SOLENOID_PORT[1]);

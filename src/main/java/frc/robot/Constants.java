@@ -64,7 +64,7 @@ public final class Constants {
     public static final double RANGE_DEGREES = 3600;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
 
-    public static final double EXTEND_POWER = 0.5;
+    public static final double EXTEND_POWER = 0.7;
     public static final double RETRACT_POWER = -EXTEND_POWER;
   }
 
@@ -76,7 +76,8 @@ public final class Constants {
   public static final class DeployableWheelsConstants {
     // The teleop is 135 seconds, we want to allow the wheels to deploy at 100
     // seconds (35 seconds before match end).
-    public static final int WAIT_TIME_ENDGAME_MS = 100 * 1000; // 100 seconds * 1000 ms per second
+    // public static final int WAIT_TIME_ENDGAME_MS = 100 * 1000; // 100 seconds * 1000 ms per second
+    public static final int WAIT_TIME_ENDGAME_MS = 10;
 
     public static final int TRACTION_WHEEL_MOTOR_PORT = 6;
   }

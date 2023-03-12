@@ -15,11 +15,12 @@ public class PivotTeleop extends CommandBase {
 
   private Pivot m_pivot;
   private GenericHID m_gamepad;
-  
-  private static final double MAX_ENCODER_VALUE = 43.7; // revolutions of the drive axel
+
+  private static final double MAX_ENCODER_VALUE = 34.85; // revolutions of the drive axel
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
   private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
-  public static final double UPRIGHT_PIVOT_VALUE = 24.547; // the value of the encoder when the pivot is at the top of rotation.
+  public static final double UPRIGHT_PIVOT_VALUE = 23.64; // the value of the encoder when the pivot is at the top of
+                                                          // rotation.
   private static final double UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE = 14.547;
   private static final double UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE = 3.0;
   private static final double MAX_MOTOR_VALUE = 0.3;
@@ -45,36 +46,36 @@ public class PivotTeleop extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() { 
+  public void initialize() {
     double revs = m_pivot.getEncoder().getPosition();
     double rpm = m_pivot.getEncoder().getVelocity();
 
     if (m_gamepad == null) {
-        System.out.println("Should have gamepad");
-        faulted = true;
-        return;
+      System.out.println("Should have gamepad");
+      faulted = true;
+      return;
     }
 
     // if (!(-5 < revs && revs <= 5)) {
-    //     // Must have a proper starting position towards low end of the robot.
-    //     System.out.println("FAULTED, POSITION INVALID");
-    //     faulted = true;
-    //     return;
+    // // Must have a proper starting position towards low end of the robot.
+    // System.out.println("FAULTED, POSITION INVALID");
+    // faulted = true;
+    // return;
     // }
 
     if (!(-0.01 < rpm && rpm <= 0.01)) {
-        // Should be fairly stationary at start.
-        System.out.println("FAULTED, VELOCITY INVALID");
-        faulted = true;
-        return;
+      // Should be fairly stationary at start.
+      System.out.println("FAULTED, VELOCITY INVALID");
+      faulted = true;
+      return;
     }
-   }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (faulted) {
-        return;
+      return;
     }
 
     double revs = m_pivot.getEncoder().getPosition();
@@ -85,37 +86,56 @@ public class PivotTeleop extends CommandBase {
     double joystick_motor_power_towards_front = 0.0;
 
     if (revs < UPRIGHT_PIVOT_VALUE && rpm < -RPM_CUSHION_TOLERANCE) {
-        // Case 1: Front of robot, falling towards front.
-        if (m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)) {
-            cushion_motor_power = 0.0;
-            joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
-            joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
-        } else {
-            joystick_motor_power_towards_back = 0.0;
-            joystick_motor_power_towards_front = 0.0;
-            cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING, MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING);
-        }
+      // Case 1: Front of robot, falling towards front.
+      if (m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)) {
+        cushion_motor_power = 0.0;
+        joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)
+            ? MAX_MOTOR_VALUE
+            : 0.0;
+        joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)
+            ? -MAX_MOTOR_VALUE
+            : 0.0;
+      } else {
+        joystick_motor_power_towards_back = 0.0;
+        joystick_motor_power_towards_front = 0.0;
+        cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm,
+            -MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING,
+            MAX_CUSHION_OUTPUT_VALUE * FRONT_CUSHION_OUTPUT_SCALING);
+      }
     } else if (revs < UPRIGHT_PIVOT_VALUE && rpm >= -RPM_CUSHION_TOLERANCE) {
-        // Case 2: Front of robot, moving upward toward back.
-        cushion_motor_power = 0.0;
-        joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
-        joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
+      // Case 2: Front of robot, moving upward toward back.
+      cushion_motor_power = 0.0;
+      joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)
+          ? MAX_MOTOR_VALUE
+          : 0.0;
+      joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)
+          ? -MAX_MOTOR_VALUE
+          : 0.0;
     } else if (revs >= UPRIGHT_PIVOT_VALUE && rpm > RPM_CUSHION_TOLERANCE) {
-        // Case 3: Back of robot, falling towards back.
-        if (m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)) {
-          cushion_motor_power = 0.0;
-          joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
-          joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
-        } else {
-          joystick_motor_power_towards_back = 0.0;
-          joystick_motor_power_towards_front = 0.0;
-          cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE, MAX_CUSHION_OUTPUT_VALUE);
-        }
-    } else {
-        // Case 4: Back of robot, moving up towards front.
+      // Case 3: Back of robot, falling towards back.
+      if (m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)) {
         cushion_motor_power = 0.0;
-        joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
-        joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
+        joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)
+            ? MAX_MOTOR_VALUE
+            : 0.0;
+        joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)
+            ? -MAX_MOTOR_VALUE
+            : 0.0;
+      } else {
+        joystick_motor_power_towards_back = 0.0;
+        joystick_motor_power_towards_front = 0.0;
+        cushion_motor_power = MathUtil.clamp(-DAMPENER_CONSTANT * rpm, -MAX_CUSHION_OUTPUT_VALUE,
+            MAX_CUSHION_OUTPUT_VALUE);
+      }
+    } else {
+      // Case 4: Back of robot, moving up towards front.
+      cushion_motor_power = 0.0;
+      joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)
+          ? MAX_MOTOR_VALUE
+          : 0.0;
+      joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)
+          ? -MAX_MOTOR_VALUE
+          : 0.0;
     }
 
     // If we're near the top, just let joystick motor commands override.
@@ -123,8 +143,12 @@ public class PivotTeleop extends CommandBase {
     double deadzone_limit_front = UPRIGHT_PIVOT_VALUE - UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE;
     if (deadzone_limit_front <= revs && revs <= deadzone_limit_back) {
       cushion_motor_power = 0.0;
-      joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? MAX_MOTOR_VALUE : 0.0;
-      joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -MAX_MOTOR_VALUE : 0.0;
+      joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON)
+          ? MAX_MOTOR_VALUE
+          : 0.0;
+      joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON)
+          ? -MAX_MOTOR_VALUE
+          : 0.0;
     }
 
     cushion_value = cushion_motor_power;

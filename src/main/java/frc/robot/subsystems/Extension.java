@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Extension extends SubsystemBase {
 
@@ -25,6 +26,13 @@ public class Extension extends SubsystemBase {
     extensionMotor.set(0.0);
   }
 
+  public void setCoastMode() {
+    extensionMotor.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void setBrakeMode() {
+    extensionMotor.setIdleMode(IdleMode.kBrake);
+  }
 
   public void setMotorPower(double power) {
     extensionMotor.set(power);

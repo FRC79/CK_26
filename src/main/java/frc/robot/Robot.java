@@ -102,6 +102,9 @@ public class Robot extends TimedRobot {
       m_TeleopDrive.cancel();
       m_TeleopDrive = null;
     }
+
+    // For easy access to robot.
+    m_robotContainer.getExtension().setCoastMode();
   }
 
   @Override
@@ -114,7 +117,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    // TODO: RESET ENCODERS HERE
+    //
+    //
+    //
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_robotContainer.getExtension().setBrakeMode();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -133,6 +143,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    m_robotContainer.getExtension().setBrakeMode();
+
     m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain(), m_robotContainer.getTranslatorJoystick(),
         m_robotContainer.getRotaterJoystick());
     m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getOperatorJoystick());
@@ -154,30 +166,30 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // DEBUG INFO
-    // if (m_timer.isReady()) {
-    // SmartDashboard.putNumber("Position (Revs)",
-    // m_robotContainer.getPivot().getEncoder().getPosition());
-    // SmartDashboard.putNumber("Velocity (RPM)",
-    // m_robotContainer.getPivot().getEncoder().getVelocity());
-    // SmartDashboard.putNumber("Current output",
-    // m_robotContainer.getPivot().getMotorOutput());
-    // SmartDashboard.putNumber("Extension Distance",
-    // m_robotContainer.getExtension().getExtensionDistance());
-    // SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
-    // m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
-    // SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
-    // m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
-    // SmartDashboard.putNumber("GyroPitchDegrees",
-    // m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
-    // SmartDashboard.putNumber("CommandedPivotGravityAssist",
-    // m_pivotTeleop.getCommandedValue());
-    // SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
-    // SmartDashboard.putNumber("CushionMotorValue",
-    // m_pivotTeleop.getCushionMotorPower());
-    // SmartDashboard.putNumber("JoystickPivotTotalValue",
-    // m_pivotTeleop.getJoystickTotalPower());
-    // m_timer.clear();
-    // }
+    if (m_timer.isReady()) {
+      SmartDashboard.putNumber("Position (Revs)",
+          m_robotContainer.getPivot().getEncoder().getPosition());
+      // SmartDashboard.putNumber("Velocity (RPM)",
+      // m_robotContainer.getPivot().getEncoder().getVelocity());
+      // SmartDashboard.putNumber("Current output",
+      // m_robotContainer.getPivot().getMotorOutput());
+      // SmartDashboard.putNumber("Extension Distance",
+      // m_robotContainer.getExtension().getExtensionDistance());
+      // SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
+      // m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+      // SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
+      // m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+      // SmartDashboard.putNumber("GyroPitchDegrees",
+      // m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+      // SmartDashboard.putNumber("CommandedPivotGravityAssist",
+      // m_pivotTeleop.getCommandedValue());
+      // SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+      // SmartDashboard.putNumber("CushionMotorValue",
+      // m_pivotTeleop.getCushionMotorPower());
+      // SmartDashboard.putNumber("JoystickPivotTotalValue",
+      // m_pivotTeleop.getJoystickTotalPower());
+      m_timer.clear();
+    }
   }
 
   @Override

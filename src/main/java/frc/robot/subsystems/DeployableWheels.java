@@ -15,6 +15,7 @@ public class DeployableWheels extends SubsystemBase {
       DeployableWheelsConstants.TRACTION_WHEEL_MOTOR_PORT);
 
   public DeployableWheels() {
+    tractionWheelMotor.setInverted(true);
     tractionWheelMotor.set(0.0);
   }
 
