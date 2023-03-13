@@ -17,10 +17,14 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.Drive_Commands.TeleopDrive;
 import frc.robot.commands.Extension_Commands.ExtendOnBackSide;
 import frc.robot.commands.Extension_Commands.RetractForTime;
+import frc.robot.commands.Extension_Commands.RetractFully;
 import frc.robot.commands.Extension_Commands.RetractUntilPivotAngle;
 import frc.robot.commands.Clamp_Commands.OpenClamp;
+import frc.robot.commands.Clamp_Commands.WaitThenOpenClamp;
 import frc.robot.commands.DeployableWheels_Commands.DeployableWheelsTeleop;
+import frc.robot.commands.DeployableWheels_Commands.StopDeployableWheelsLoop;
 import frc.robot.commands.Drive_Commands.DriveForwardForTime;
+import frc.robot.commands.Drive_Commands.StopDrivetrainLoop;
 import frc.robot.commands.Pivot_Commands.PivotTeleop;
 import frc.robot.commands.Pivot_Commands.PivotToHighGoal;
 import frc.robot.physics.PivotController;
@@ -47,6 +51,8 @@ public class Robot extends TimedRobot {
   private UsbCamera camera1;
   private UsbCamera camera2;
   private VideoSink server;
+
+  private AutonState auton_state;
 
   private Timer m_timer;
 
@@ -141,6 +147,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.getExtension().setBrakeMode();
+    auton_state = new AutonState();
 
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autoSelected = m_auto_chooser.getSelected();
@@ -152,27 +159,33 @@ public class Robot extends TimedRobot {
       m_autonomousCommand = Commands.none();
     } else if (m_autoSelected.equals(kScoreHighGoal)) {
       // Parallel chain command
-      // Command retract_for_time_command = new
-      // RetractForTime(m_robotContainer.getExtension());
+      // Command retract_for_time_command = new RetractForTime(m_robotContainer.getExtension());
 
-      // Command pivot_to_high_goal_command = new
-      // PivotToHighGoal(m_robotContainer.getPivot(),
-      // m_robotContainer.getPivotController());
+      Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
+          m_robotContainer.getPivotController(), m_robotContainer.getExtension(), auton_state);
 
-      // Command extend_on_back_side_command = new
-      // ExtendOnBackSide(m_robotContainer.getPivot(),
-      // m_robotContainer.getExtension());
+      Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
+          m_robotContainer.getExtension(), auton_state);
 
-      // Command open_clamp_command = new OpenClamp(m_robotContainer.getClamp());
+      Command open_clamp_command = new WaitThenOpenClamp(m_robotContainer.getClamp());
 
-      // Command extendAndReleaseCommand =
-      // extend_on_back_side_command.andThen(open_clamp_command);
+      Command fully_retract_command = new RetractFully(m_robotContainer.getExtension());
+
+      Command extendAndReleaseCommand =
+      extend_on_back_side_command.andThen(open_clamp_command).andThen(fully_retract_command);
+
+      Command do_nothing_drivetrain_command = new StopDrivetrainLoop(m_robotContainer.getDrivetrain(), m_robotContainer.getPivot(), auton_state);
+
+      Command do_nothing_deployable_wheels_command = new StopDeployableWheelsLoop(
+          m_robotContainer.getDeployableWheels());
 
       // m_autonomousCommand = Commands.parallel(
       // retract_for_time_command,
       // pivot_to_high_goal_command,
-      // extendAndReleaseCommand);
-      m_autonomousCommand = Commands.none();
+      // extendAndReleaseCommand, do_nothing_drivetrain_command,
+      // do_nothing_deployable_wheels_command);
+      m_autonomousCommand = Commands.parallel(pivot_to_high_goal_command,
+          extendAndReleaseCommand, do_nothing_drivetrain_command, do_nothing_deployable_wheels_command);
     } else {
       m_autonomousCommand = Commands.none();
     }
@@ -201,6 +214,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     m_robotContainer.getExtension().setBrakeMode();
+    m_robotContainer.getExtension().resetEncoder();
 
     m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain(), m_robotContainer.getTranslatorJoystick(),
         m_robotContainer.getRotaterJoystick());
@@ -229,6 +243,9 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("PotClamped", m_robotContainer.getExtension().getClampedPot());
       SmartDashboard.putBoolean("IsFullyExtended", m_robotContainer.getExtension().isFullyExtended());
       SmartDashboard.putBoolean("IsFullyRetracted", m_robotContainer.getExtension().isFullyRetracted());
+      SmartDashboard.putNumber("ExtensionRevs", m_robotContainer.getExtension().getEncoder().getPosition());
+      SmartDashboard.putBoolean("StillSpooledIn", m_robotContainer.getExtension().stillSpooledIn());
+      SmartDashboard.putNumber("CalibratedEncoderExtension", m_robotContainer.getExtension().getCalibratedEncoderPosition());
       // SmartDashboard.putNumber("Position (Revs)",
       // m_robotContainer.getPivot().getEncoder().getPosition());
       // SmartDashboard.putNumber("Velocity (RPM)",

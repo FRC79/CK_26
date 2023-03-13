@@ -21,6 +21,8 @@ public class Extension extends SubsystemBase {
   private final AnalogPotentiometer extendPot = new AnalogPotentiometer(
       ExtensionConstants.EXTENSION_POT_PORT, ExtensionConstants.RANGE_DEGREES);
 
+  private double encoderOffset = 0;
+
   public Extension() {
     extensionMotor.set(0.0);
   }
@@ -55,5 +57,23 @@ public class Extension extends SubsystemBase {
 
   public double getClampedPot() {
     return MathUtil.clamp(getPot(), ExtensionConstants.FULL_EXTEND_POT_VALUE, ExtensionConstants.FULL_RETRACT_POT_VALUE);
+  }
+
+  public void resetEncoder() {
+    encoderOffset = getEncoder().getPosition();
+  }
+
+  public double getCalibratedEncoderPosition() {
+    return getEncoder().getPosition() - encoderOffset;
+  }
+
+  public boolean stillSpooledIn() {
+    double SPOOL_OUT_TURNS = 46.0;
+    return Math.abs(getCalibratedEncoderPosition()) <= SPOOL_OUT_TURNS;
+  }
+
+  public boolean stillSpooledInLess() {
+    double SPOOL_OUT_TURNS = 13.0;
+    return Math.abs(getCalibratedEncoderPosition()) <= SPOOL_OUT_TURNS;
   }
 }

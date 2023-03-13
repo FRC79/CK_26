@@ -20,7 +20,8 @@ public class DeployableWheels extends SubsystemBase {
   }
 
   public void setMotorPower(double power) {
-    tractionWheelMotor.set(power);
+    // tractionWheelMotor.set(power);
+    tractionWheelMotor.set(0.0);
   }
 
   public void teleopInit() {

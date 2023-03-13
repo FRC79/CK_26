@@ -12,7 +12,7 @@ public class PivotController {
 
   private Pivot m_pivot;
 
-  private static final double MAX_ENCODER_VALUE = 34.85; // revolutions of the drive axel
+  public static final double MAX_ENCODER_VALUE = 34.85; // revolutions of the drive axel
   private static final double MIN_ENCODER_VALUE = 0.0; // starting location when the pivot is stored in the robot.
   private static final double MIN_ABS_RPM_CUSHION = 10.0; // RPM
   public static final double UPRIGHT_PIVOT_VALUE = 23.64; // the value of the encoder when the pivot is at the top of
