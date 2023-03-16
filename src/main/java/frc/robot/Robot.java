@@ -281,7 +281,7 @@ public class Robot extends TimedRobot {
     if (m_timer.isReady()) {
       for (int i = 1; i < 12; i++) {
         SmartDashboard.putBoolean("KrunchButton" + Integer.toString(i),
-            m_robotContainer.getOperatorJoystick().getRawButton(i));
+            m_robotContainer.getTranslatorJoystick().getRawButton(i));
       }
       m_timer.clear();
     }

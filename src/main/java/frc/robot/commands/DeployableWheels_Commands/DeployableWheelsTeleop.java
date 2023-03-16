@@ -11,14 +11,16 @@ import frc.robot.Constants.*;
 import frc.robot.subsystems.DeployableWheels;
 
 public class DeployableWheelsTeleop extends CommandBase {
-  
+
   private DeployableWheels m_deployableWheels;
   private Timer endgameTimer;
   private Joystick m_translatorJoystick;
+  private boolean wheelsEngaged;
 
   public DeployableWheelsTeleop(DeployableWheels subsystem, Joystick translator) {
     m_deployableWheels = subsystem;
     m_translatorJoystick = translator;
+    wheelsEngaged = false;
     addRequirements(m_deployableWheels);
   }
 
@@ -26,14 +28,26 @@ public class DeployableWheelsTeleop extends CommandBase {
   @Override
   public void initialize() {
     endgameTimer = new Timer(DeployableWheelsConstants.WAIT_TIME_ENDGAME_MS);
+    wheelsEngaged = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (!endgameTimer.isReady()) {
-        m_deployableWheels.setMotorPower(0.0);
-        return;
+      m_deployableWheels.setMotorPower(0.0);
+      return;
+    }
+
+    if (m_translatorJoystick.getRawButton(OperatorConstants.BRAKE_DRIVETRAIN_BUTTON)) {
+      if (!wheelsEngaged) {
+        wheelsEngaged = true;
+      }
+    }
+
+    if (!wheelsEngaged) {
+      m_deployableWheels.setMotorPower(0.0);
+      return;
     }
 
     double yStick = -1 * m_translatorJoystick.getY();

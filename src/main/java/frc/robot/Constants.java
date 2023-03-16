@@ -80,8 +80,8 @@ public final class Constants {
   public static final class DeployableWheelsConstants {
     // The teleop is 135 seconds, we want to allow the wheels to deploy at 100
     // seconds (35 seconds before match end).
-    // public static final int WAIT_TIME_ENDGAME_MS = 100 * 1000; // 100 seconds * 1000 ms per second
-    public static final int WAIT_TIME_ENDGAME_MS = 10;
+    public static final int WAIT_TIME_ENDGAME_MS = 95 * 1000; // 100 seconds * 1000 ms per second
+    // public static final int WAIT_TIME_ENDGAME_MS = 10;
 
     public static final int TRACTION_WHEEL_MOTOR_PORT = 6;
   }
@@ -92,6 +92,8 @@ public final class Constants {
     public static final int OPERATOR = 2;
 
     /* Controller Buttons */
+    public static final int BRAKE_DRIVETRAIN_BUTTON = 7;
+
     // Extension buttons
     public static final int EXTENSION_BUTTON = 7;
     public static final int RETRACTION_BUTTON = 5;
