@@ -6,6 +6,7 @@ package frc.robot.physics;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.*;
+import frc.robot.subsystems.Extension;
 import frc.robot.subsystems.Pivot;
 
 public class PivotController {
@@ -19,6 +20,7 @@ public class PivotController {
                                                           // rotation.
   public static final double UPRIGHT_PIVOT_TOLERANCE_FRONT_SIDE = 14.547;
   public static final double UPRIGHT_PIVOT_TOLERANCE_BACK_SIDE = 3.0;
+  public static final double TELEOP_FIXED_POSITION_TOP_REVS = 8.0;
   public static final double MAX_MOTOR_VALUE = 0.3;
   private static final double DAMPENER_CONSTANT = 0.00001 * 0.2;
   private static final double MAX_CUSHION_OUTPUT_VALUE = 0.1;
@@ -29,11 +31,26 @@ public class PivotController {
   private double commanded_value = 0.0;
   private double total_motor_commanded = 0.0;
   private double cushion_value = 0.0;
+  private boolean fixedPositionEnabled = false;
+  private Extension m_Extension;
 
   /** Creates a new PivotController. */
-  public PivotController(Pivot subsystem) {
+  public PivotController(Pivot subsystem, Extension extension) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_pivot = subsystem;
+    m_Extension = extension;
+  }
+
+  public void setTeleopMode() {
+    fixedPositionEnabled = PivotConstants.TELEOP_FIXED_POSITION_ENABLED;
+  }
+
+  public void setAutonMode() {
+    fixedPositionEnabled = false;
+  }
+
+  public void setDisabledMode() {
+    fixedPositionEnabled = false; 
   }
 
   // public bool isStartStatusOk() {
@@ -56,6 +73,10 @@ public class PivotController {
 
   // return true;
   // }
+
+  public boolean isInFixedPositionRange() {
+    return m_Extension.isMostlyRetracted() && m_pivot.getEncoder().getPosition() <= TELEOP_FIXED_POSITION_TOP_REVS;
+  }
 
   public double controlLaw(double forward_motor_request, double backward_motor_request) {
     if (faulted) {
@@ -117,6 +138,10 @@ public class PivotController {
 
     cushion_value = cushion_motor_power;
     total_motor_commanded = back_motor_commanded + front_motor_commanded;
+
+    if (fixedPositionEnabled && isInFixedPositionRange()) {
+      cushion_value = 0.0;
+    }
 
     double total_power = cushion_motor_power + back_motor_commanded + front_motor_commanded;
     double clamped_total_power = MathUtil.clamp(total_power, -MAX_TOTAL_MOTOR_VALUE, MAX_TOTAL_MOTOR_VALUE);

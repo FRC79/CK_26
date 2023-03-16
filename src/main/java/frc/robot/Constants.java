@@ -53,6 +53,8 @@ public final class Constants {
     public static final int[] HIGH_SOLENOID_PORT = new int[] { 0, 1 };
     
     public static final double kMAX_OUTPUT_MAG_VELOCITY = 0.2;
+
+    public static final boolean TELEOP_FIXED_POSITION_ENABLED = false;
   }
 
   public static final class ExtensionConstants {
@@ -66,6 +68,7 @@ public final class Constants {
     // public static final double FULL_EXTEND_POT_VALUE = 1500;
     public static final double FULL_EXTEND_POT_VALUE = 2500;
     public static final double FULL_RETRACT_POT_VALUE = 3600;
+    public static final double MOSTLY_RETRACT_POT_VALUE = 3000;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
 
     public static final double EXTEND_POWER = 0.7;

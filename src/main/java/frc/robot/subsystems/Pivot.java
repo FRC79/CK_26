@@ -13,6 +13,7 @@ import frc.robot.Constants.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Pivot extends SubsystemBase {
 
@@ -39,6 +40,15 @@ public class Pivot extends SubsystemBase {
 
   public void setMotorPower(double power) {
     pivotMotor.set(power);
+  }
+
+  
+  public void setCoastMode() {
+    pivotMotor.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void setBrakeMode() {
+    pivotMotor.setIdleMode(IdleMode.kBrake);
   }
 
   public RelativeEncoder getEncoder() {

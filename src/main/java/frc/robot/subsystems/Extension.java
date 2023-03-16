@@ -55,8 +55,13 @@ public class Extension extends SubsystemBase {
     return Math.abs(getClampedPot() - ExtensionConstants.FULL_RETRACT_POT_VALUE) < 1e-1;
   }
 
+  public boolean isMostlyRetracted() {
+    return getClampedPot() >= ExtensionConstants.MOSTLY_RETRACT_POT_VALUE;
+  }
+
   public double getClampedPot() {
-    return MathUtil.clamp(getPot(), ExtensionConstants.FULL_EXTEND_POT_VALUE, ExtensionConstants.FULL_RETRACT_POT_VALUE);
+    return MathUtil.clamp(getPot(), ExtensionConstants.FULL_EXTEND_POT_VALUE,
+        ExtensionConstants.FULL_RETRACT_POT_VALUE);
   }
 
   public void resetEncoder() {

@@ -142,6 +142,8 @@ public class Robot extends TimedRobot {
 
     // For easy access to robot.
     m_robotContainer.getExtension().setCoastMode();
+    m_robotContainer.getPivotController().setDisabledMode();
+    m_robotContainer.getPivot().setCoastMode();
   }
 
   @Override
@@ -155,6 +157,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.getExtension().setBrakeMode();
+    m_robotContainer.getPivotController().setAutonMode();
+    m_robotContainer.getPivot().setCoastMode();
+
     auton_state = new AutonState();
 
     m_autoSelected = m_auto_chooser.getSelected();
@@ -218,6 +223,8 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     m_robotContainer.getExtension().setBrakeMode();
     m_robotContainer.getExtension().resetEncoder();
+    m_robotContainer.getPivotController().setTeleopMode();
+    m_robotContainer.getPivot().setCoastMode();
 
     m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain(), m_robotContainer.getTranslatorJoystick(),
         m_robotContainer.getRotaterJoystick());
@@ -286,6 +293,9 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.getExtension().setCoastMode();
+    m_robotContainer.getPivotController().setDisabledMode();
+    m_robotContainer.getPivot().setCoastMode();
     m_timer = new Timer(100);
   }
 

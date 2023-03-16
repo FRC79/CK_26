@@ -46,7 +46,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    m_PivotController = new PivotController(m_Pivot);
+    m_PivotController = new PivotController(m_Pivot, m_Extension);
   }
 
   public Drivetrain getDrivetrain() {

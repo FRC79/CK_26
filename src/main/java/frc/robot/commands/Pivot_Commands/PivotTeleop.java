@@ -70,6 +70,12 @@ public class PivotTeleop extends CommandBase {
     double joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? PivotController.MAX_MOTOR_VALUE : 0.0;
     double joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -PivotController.MAX_MOTOR_VALUE : 0.0;
     
+    if (PivotConstants.TELEOP_FIXED_POSITION_ENABLED && m_controller.isInFixedPositionRange()) {
+      m_pivot.setBrakeMode();
+    } else {
+      m_pivot.setCoastMode();
+    }
+
     // Calculate the control law and apply it to the motor.
     double motor_power = m_controller.controlLaw(joystick_motor_power_towards_front, joystick_motor_power_towards_back);
     m_pivot.setMotorPower(motor_power);
