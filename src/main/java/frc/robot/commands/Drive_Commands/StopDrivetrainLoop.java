@@ -18,7 +18,7 @@ public class StopDrivetrainLoop extends CommandBase {
   private final Pivot m_Pivot;
   private Timer m_move_forward_timer;
   private boolean stage_three_started = false;
-  private boolean should_drive_forward = false;
+  private boolean m_should_drive_forward = false;
 
   /** Creates a new DriveRight. */
   public StopDrivetrainLoop(Drivetrain subsystem, Pivot pivot, AutonState auto_state, boolean should_drive_forward) {
@@ -26,7 +26,7 @@ public class StopDrivetrainLoop extends CommandBase {
     m_MecanumDrive = subsystem;
     m_auto_state = auto_state;
     m_Pivot = pivot;
-    should_drive_forward = should_drive_forward;
+    m_should_drive_forward = should_drive_forward;
     addRequirements(m_MecanumDrive);
   }
 
@@ -46,7 +46,7 @@ public class StopDrivetrainLoop extends CommandBase {
         m_move_forward_timer.clear();
     }
 
-    if (stage_three_started && !m_move_forward_timer.isReady() && should_drive_forward) {
+    if (stage_three_started && !m_move_forward_timer.isReady() && m_should_drive_forward) {
         m_MecanumDrive.cartesianDrive(0.5, 0, 0);
         return;
     }
