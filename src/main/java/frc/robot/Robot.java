@@ -19,6 +19,7 @@ import frc.robot.commands.Extension_Commands.ExtendOnBackSide;
 import frc.robot.commands.Extension_Commands.RetractForTime;
 import frc.robot.commands.Extension_Commands.RetractFully;
 import frc.robot.commands.Extension_Commands.RetractUntilPivotAngle;
+import frc.robot.commands.Clamp_Commands.ClampTeleop;
 import frc.robot.commands.Clamp_Commands.OpenClamp;
 import frc.robot.commands.Clamp_Commands.WaitThenOpenClamp;
 import frc.robot.commands.DeployableWheels_Commands.DeployableWheelsTeleop;
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot {
   private TeleopDrive m_TeleopDrive;
   private PivotTeleop m_pivotTeleop;
   private DeployableWheelsTeleop m_DeployableWheelsTeleop;
+  private ClampTeleop m_clampTeleop;
 
   private UsbCamera camera1;
   private UsbCamera camera2;
@@ -131,6 +133,11 @@ public class Robot extends TimedRobot {
     if (m_TeleopDrive != null) {
       m_TeleopDrive.cancel();
       m_TeleopDrive = null;
+    }
+
+    if (m_clampTeleop != null) {
+      m_clampTeleop.cancel();
+      m_clampTeleop = null;
     }
 
     // For easy access to robot.
@@ -218,6 +225,7 @@ public class Robot extends TimedRobot {
         m_robotContainer.getOperatorJoystick());
     m_DeployableWheelsTeleop = new DeployableWheelsTeleop(m_robotContainer.getDeployableWheels(),
         m_robotContainer.getTranslatorJoystick());
+    m_clampTeleop = new ClampTeleop(m_robotContainer.getClamp(), m_robotContainer.getOperatorJoystick());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -226,6 +234,7 @@ public class Robot extends TimedRobot {
     m_TeleopDrive.schedule();
     m_pivotTeleop.schedule();
     m_DeployableWheelsTeleop.schedule();
+    m_clampTeleop.schedule();
 
     m_timer = new Timer(100);
   }

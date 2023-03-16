@@ -103,8 +103,9 @@ public final class Constants {
     public static final int PIVOT_TOWARDS_ROBOT_BACK_BUTTON = 6;
 
     // Clamp buttons
-    public static final int CLAMP_OPEN_BUTTON = 1;
-    public static final int CLAMP_CLOSE_BUTTON = 4;
+    // public static final int CLAMP_OPEN_BUTTON = 1;
+    // public static final int CLAMP_CLOSE_BUTTON = 4;
+    public static final int CLAMP_TOGGLE_BUTTON = 1;
 
     // Height pistons for pivot
     public static final int HARD_STOP_HIGH_TOGGLE_BUTTON = 10;

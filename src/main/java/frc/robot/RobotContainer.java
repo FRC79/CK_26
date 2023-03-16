@@ -100,9 +100,9 @@ public class RobotContainer {
 
     new JoystickButton(operator, OperatorConstants.RETRACTION_BUTTON).whileTrue(new Retract(m_Extension));
 
-    new JoystickButton(operator, OperatorConstants.CLAMP_OPEN_BUTTON).whileTrue(new OpenClamp(m_Clamp));
+    // new JoystickButton(operator, OperatorConstants.CLAMP_OPEN_BUTTON).whileTrue(new OpenClamp(m_Clamp));
 
-    new JoystickButton(operator, OperatorConstants.CLAMP_CLOSE_BUTTON).whileTrue(new CloseClamp(m_Clamp));
+    // new JoystickButton(operator, OperatorConstants.CLAMP_CLOSE_BUTTON).whileTrue(new CloseClamp(m_Clamp));
 
 
     // NEED TO FIX
