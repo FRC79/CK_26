@@ -243,38 +243,43 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // DEBUG INFO
-    if (m_timer.isReady()) {
-      SmartDashboard.putNumber("PotRaw", m_robotContainer.getExtension().getPot());
-      SmartDashboard.putNumber("PotClamped", m_robotContainer.getExtension().getClampedPot());
-      SmartDashboard.putBoolean("IsFullyExtended", m_robotContainer.getExtension().isFullyExtended());
-      SmartDashboard.putBoolean("IsFullyRetracted", m_robotContainer.getExtension().isFullyRetracted());
-      SmartDashboard.putNumber("ExtensionRevs", m_robotContainer.getExtension().getEncoder().getPosition());
-      SmartDashboard.putBoolean("StillSpooledIn", m_robotContainer.getExtension().stillSpooledIn());
-      SmartDashboard.putNumber("CalibratedEncoderExtension",
-          m_robotContainer.getExtension().getCalibratedEncoderPosition());
-      // SmartDashboard.putNumber("Position (Revs)",
-      // m_robotContainer.getPivot().getEncoder().getPosition());
-      // SmartDashboard.putNumber("Velocity (RPM)",
-      // m_robotContainer.getPivot().getEncoder().getVelocity());
-      // SmartDashboard.putNumber("Current output",
-      // m_robotContainer.getPivot().getMotorOutput());
-      // SmartDashboard.putNumber("Extension Distance",
-      // m_robotContainer.getExtension().getExtensionDistance());
-      // SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
-      // m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
-      // SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
-      // m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
-      // SmartDashboard.putNumber("GyroPitchDegrees",
-      // m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
-      // SmartDashboard.putNumber("CommandedPivotGravityAssist",
-      // m_pivotTeleop.getCommandedValue());
-      // SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
-      // SmartDashboard.putNumber("CushionMotorValue",
-      // m_pivotTeleop.getCushionMotorPower());
-      // SmartDashboard.putNumber("JoystickPivotTotalValue",
-      // m_pivotTeleop.getTotalMotorCommanded());
-      m_timer.clear();
-    }
+    // if (m_timer.isReady()) {
+    // SmartDashboard.putNumber("PotRaw", m_robotContainer.getExtension().getPot());
+    // SmartDashboard.putNumber("PotClamped",
+    // m_robotContainer.getExtension().getClampedPot());
+    // SmartDashboard.putBoolean("IsFullyExtended",
+    // m_robotContainer.getExtension().isFullyExtended());
+    // SmartDashboard.putBoolean("IsFullyRetracted",
+    // m_robotContainer.getExtension().isFullyRetracted());
+    // SmartDashboard.putNumber("ExtensionRevs",
+    // m_robotContainer.getExtension().getEncoder().getPosition());
+    // SmartDashboard.putBoolean("StillSpooledIn",
+    // m_robotContainer.getExtension().stillSpooledIn());
+    // SmartDashboard.putNumber("CalibratedEncoderExtension",
+    // m_robotContainer.getExtension().getCalibratedEncoderPosition());
+    // SmartDashboard.putNumber("Position (Revs)",
+    // m_robotContainer.getPivot().getEncoder().getPosition());
+    // SmartDashboard.putNumber("Velocity (RPM)",
+    // m_robotContainer.getPivot().getEncoder().getVelocity());
+    // SmartDashboard.putNumber("Current output",
+    // m_robotContainer.getPivot().getMotorOutput());
+    // SmartDashboard.putNumber("Extension Distance",
+    // m_robotContainer.getExtension().getExtensionDistance());
+    // SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
+    // m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+    // SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
+    // m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+    // SmartDashboard.putNumber("GyroPitchDegrees",
+    // m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+    // SmartDashboard.putNumber("CommandedPivotGravityAssist",
+    // m_pivotTeleop.getCommandedValue());
+    // SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+    // SmartDashboard.putNumber("CushionMotorValue",
+    // m_pivotTeleop.getCushionMotorPower());
+    // SmartDashboard.putNumber("JoystickPivotTotalValue",
+    // m_pivotTeleop.getTotalMotorCommanded());
+    // m_timer.clear();
+    // }
   }
 
   @Override
