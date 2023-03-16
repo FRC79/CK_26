@@ -51,8 +51,7 @@ public final class Constants {
     public static final int HIGH_GOAL_LIMIT_PORT = 5;
 
     public static final int[] HIGH_SOLENOID_PORT = new int[] { 0, 1 };
-    public static final int[] LOW_SOLENOID_PORT = new int[] { 4, 5 };
-
+    
     public static final double kMAX_OUTPUT_MAG_VELOCITY = 0.2;
   }
 
