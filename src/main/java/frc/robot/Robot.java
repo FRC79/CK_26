@@ -57,8 +57,9 @@ public class Robot extends TimedRobot {
   private Timer m_timer;
 
   private static final String kDoNothingAuto = "Do Nothing";
-  private static final String kDriveForwardForTime = "Drive Forward for Time";
-  private static final String kScoreHighGoal = "Score High Goal";
+  private static final String kScoreHighGoal = "Score High Goal Then Stop";
+  private static final String kScoreHighGoalAndDrive = "Score High Goal Then Drive";
+
   private String m_autoSelected;
   private final SendableChooser<String> m_auto_chooser = new SendableChooser<>();
 
@@ -74,20 +75,20 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
 
     m_auto_chooser.setDefaultOption(kDoNothingAuto, kDoNothingAuto);
-    m_auto_chooser.addOption(kDriveForwardForTime, kDriveForwardForTime);
     m_auto_chooser.addOption(kScoreHighGoal, kScoreHighGoal);
+    m_auto_chooser.addOption(kScoreHighGoalAndDrive, kScoreHighGoalAndDrive);
     SmartDashboard.putData("Autonomous Mode Chooser", m_auto_chooser);
 
     camera1 = CameraServer.startAutomaticCapture(0);
-    camera2 = CameraServer.startAutomaticCapture(1);
+    // camera2 = CameraServer.startAutomaticCapture(1);
     camera1.setResolution(320, 240);
-    camera2.setResolution(320, 240);
+    // camera2.setResolution(320, 240);
     camera1.setFPS(15);
-    camera2.setFPS(15);
+    // camera2.setFPS(15);
     server = CameraServer.getServer();
 
     camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-    camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    // camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
 
     m_robotContainer = new RobotContainer();
   }
@@ -149,43 +150,38 @@ public class Robot extends TimedRobot {
     m_robotContainer.getExtension().setBrakeMode();
     auton_state = new AutonState();
 
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autoSelected = m_auto_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
 
-    if (m_autoSelected.equals(kDriveForwardForTime)) {
-      // m_autonomousCommand = new
-      // DriveForwardForTime(m_robotContainer.getDrivetrain(), 1000);
-      m_autonomousCommand = Commands.none();
-    } else if (m_autoSelected.equals(kScoreHighGoal)) {
-      // Parallel chain command
-      // Command retract_for_time_command = new RetractForTime(m_robotContainer.getExtension());
+    Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
+        m_robotContainer.getPivotController(), m_robotContainer.getExtension(), auton_state);
 
-      Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
-          m_robotContainer.getPivotController(), m_robotContainer.getExtension(), auton_state);
+    Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
+        m_robotContainer.getExtension(), auton_state);
 
-      Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
-          m_robotContainer.getExtension(), auton_state);
+    Command open_clamp_command = new WaitThenOpenClamp(m_robotContainer.getClamp());
 
-      Command open_clamp_command = new WaitThenOpenClamp(m_robotContainer.getClamp());
+    Command fully_retract_command = new RetractFully(m_robotContainer.getExtension());
 
-      Command fully_retract_command = new RetractFully(m_robotContainer.getExtension());
+    Command extendAndReleaseCommand = extend_on_back_side_command.andThen(open_clamp_command)
+        .andThen(fully_retract_command);
 
-      Command extendAndReleaseCommand =
-      extend_on_back_side_command.andThen(open_clamp_command).andThen(fully_retract_command);
+    Command do_nothing_deployable_wheels_command = new StopDeployableWheelsLoop(
+        m_robotContainer.getDeployableWheels());
 
-      Command do_nothing_drivetrain_command = new StopDrivetrainLoop(m_robotContainer.getDrivetrain(), m_robotContainer.getPivot(), auton_state);
+    if (m_autoSelected.equals(kScoreHighGoal)) {
+      Command do_nothing_drive_command = new StopDrivetrainLoop(m_robotContainer.getDrivetrain(),
+          m_robotContainer.getPivot(), auton_state, false);
 
-      Command do_nothing_deployable_wheels_command = new StopDeployableWheelsLoop(
-          m_robotContainer.getDeployableWheels());
-
-      // m_autonomousCommand = Commands.parallel(
-      // retract_for_time_command,
-      // pivot_to_high_goal_command,
-      // extendAndReleaseCommand, do_nothing_drivetrain_command,
-      // do_nothing_deployable_wheels_command);
       m_autonomousCommand = Commands.parallel(pivot_to_high_goal_command,
-          extendAndReleaseCommand, do_nothing_drivetrain_command, do_nothing_deployable_wheels_command);
+          extendAndReleaseCommand, do_nothing_drive_command, do_nothing_deployable_wheels_command);
+
+    } else if (m_autoSelected.equals(kScoreHighGoalAndDrive)) {
+      Command wait_then_drive_command = new StopDrivetrainLoop(m_robotContainer.getDrivetrain(),
+          m_robotContainer.getPivot(), auton_state, true);
+
+      m_autonomousCommand = Commands.parallel(pivot_to_high_goal_command,
+          extendAndReleaseCommand, wait_then_drive_command, do_nothing_deployable_wheels_command);
     } else {
       m_autonomousCommand = Commands.none();
     }
@@ -245,7 +241,8 @@ public class Robot extends TimedRobot {
       SmartDashboard.putBoolean("IsFullyRetracted", m_robotContainer.getExtension().isFullyRetracted());
       SmartDashboard.putNumber("ExtensionRevs", m_robotContainer.getExtension().getEncoder().getPosition());
       SmartDashboard.putBoolean("StillSpooledIn", m_robotContainer.getExtension().stillSpooledIn());
-      SmartDashboard.putNumber("CalibratedEncoderExtension", m_robotContainer.getExtension().getCalibratedEncoderPosition());
+      SmartDashboard.putNumber("CalibratedEncoderExtension",
+          m_robotContainer.getExtension().getCalibratedEncoderPosition());
       // SmartDashboard.putNumber("Position (Revs)",
       // m_robotContainer.getPivot().getEncoder().getPosition());
       // SmartDashboard.putNumber("Velocity (RPM)",
