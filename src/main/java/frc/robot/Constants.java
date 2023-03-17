@@ -65,7 +65,7 @@ public final class Constants {
     public static final double RANGE_DEGREES = 3600;
     // public static final double FULL_EXTEND_POT_VALUE = 1500;
     public static final double FULL_EXTEND_POT_VALUE = 2500;
-    public static final double FULL_RETRACT_POT_VALUE = 3600;
+    public static final double FULL_RETRACT_POT_VALUE = 3330;
     public static final double POT_ANGLE_TO_EXTENSION_DISTANCE_CM = 76.2 / RANGE_DEGREES; // CM / DEG
 
     public static final double EXTEND_POWER = 0.7;
