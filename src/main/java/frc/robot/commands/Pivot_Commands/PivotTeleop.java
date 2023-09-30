@@ -9,19 +9,19 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.*;
-import frc.robot.physics.PivotController;
+import frc.robot.physics.PDPivotController;
 import frc.robot.subsystems.Pivot;
 
 public class PivotTeleop extends CommandBase {
 
   private Pivot m_pivot;
   private GenericHID m_gamepad;
-  private PivotController m_controller;
+  private PDPivotController m_controller;
 
   private boolean faulted = false;
   
   /** Creates a new PivotTeleop. */
-  public PivotTeleop(Pivot subsystem, PivotController controller, GenericHID operator_joystick) {
+  public PivotTeleop(Pivot subsystem, PDPivotController controller, GenericHID operator_joystick) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_pivot = subsystem;
     m_controller = controller;
@@ -45,6 +45,8 @@ public class PivotTeleop extends CommandBase {
       System.out.println("Should have controller");
     }
 
+    m_controller.resetPDController();
+
     // if (!(-5 < revs && revs <= 5)) {
     //     // Must have a proper starting position towards low end of the robot.
     //     System.out.println("FAULTED, POSITION INVALID");
@@ -67,8 +69,8 @@ public class PivotTeleop extends CommandBase {
         return;
     }
 
-    double joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? PivotController.MAX_MOTOR_VALUE : 0.0;
-    double joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -PivotController.MAX_MOTOR_VALUE : 0.0;
+    double joystick_motor_power_towards_back = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_BACK_BUTTON) ? PDPivotController.MAX_MOTOR_VALUE : 0.0;
+    double joystick_motor_power_towards_front = m_gamepad.getRawButton(OperatorConstants.PIVOT_TOWARDS_ROBOT_FRONT_BUTTON) ? -PDPivotController.MAX_MOTOR_VALUE : 0.0;
     
     // Calculate the control law and apply it to the motor.
     double motor_power = m_controller.controlLaw(joystick_motor_power_towards_front, joystick_motor_power_towards_back);

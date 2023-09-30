@@ -28,7 +28,7 @@ import frc.robot.commands.Drive_Commands.DriveForwardForTime;
 import frc.robot.commands.Drive_Commands.StopDrivetrainLoop;
 import frc.robot.commands.Pivot_Commands.PivotTeleop;
 import frc.robot.commands.Pivot_Commands.PivotToHighGoal;
-import frc.robot.physics.PivotController;
+import frc.robot.physics.PDPivotController;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 /**
@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + m_autoSelected);
 
     Command pivot_to_high_goal_command = new PivotToHighGoal(m_robotContainer.getPivot(),
-        m_robotContainer.getPivotController(), m_robotContainer.getExtension(), auton_state);
+        m_robotContainer.getPDPivotController(), m_robotContainer.getExtension(), auton_state);
 
     Command extend_on_back_side_command = new ExtendOnBackSide(m_robotContainer.getPivot(),
         m_robotContainer.getExtension(), auton_state);
@@ -221,7 +221,7 @@ public class Robot extends TimedRobot {
 
     m_TeleopDrive = new TeleopDrive(m_robotContainer.getDrivetrain(), m_robotContainer.getTranslatorJoystick(),
         m_robotContainer.getRotaterJoystick());
-    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getPivotController(),
+    m_pivotTeleop = new PivotTeleop(m_robotContainer.getPivot(), m_robotContainer.getPDPivotController(),
         m_robotContainer.getOperatorJoystick());
     m_DeployableWheelsTeleop = new DeployableWheelsTeleop(m_robotContainer.getDeployableWheels(),
         m_robotContainer.getTranslatorJoystick());
@@ -243,41 +243,49 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // DEBUG INFO
-    // if (m_timer.isReady()) {
-    //   SmartDashboard.putNumber("PotRaw", m_robotContainer.getExtension().getPot());
-    //   SmartDashboard.putNumber("PotClamped",
-    //       m_robotContainer.getExtension().getClampedPot());
-    //   SmartDashboard.putBoolean("IsFullyExtended",
-    //       m_robotContainer.getExtension().isFullyExtended());
-    //   SmartDashboard.putBoolean("IsFullyRetracted",
-    //       m_robotContainer.getExtension().isFullyRetracted());
-    //   SmartDashboard.putNumber("ExtensionRevs",
-    //       m_robotContainer.getExtension().getEncoder().getPosition());
-    //   SmartDashboard.putBoolean("StillSpooledIn",
-    //       m_robotContainer.getExtension().stillSpooledIn());
-    //   SmartDashboard.putNumber("CalibratedEncoderExtension",
-    //       m_robotContainer.getExtension().getCalibratedEncoderPosition());
-    //   SmartDashboard.putNumber("Position (Revs)",
-    //       m_robotContainer.getPivot().getEncoder().getPosition());
-    //   SmartDashboard.putNumber("Velocity (RPM)",
-    //       m_robotContainer.getPivot().getEncoder().getVelocity());
-    //   SmartDashboard.putNumber("Current output",
-    //       m_robotContainer.getPivot().getMotorOutput());
-    //   SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
-    //       m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
-    //   SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
-    //       m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
-    //   SmartDashboard.putNumber("GyroPitchDegrees",
-    //       m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
-    //   SmartDashboard.putNumber("CommandedPivotGravityAssist",
-    //       m_pivotTeleop.getCommandedValue());
-    //   SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
-    //   SmartDashboard.putNumber("CushionMotorValue",
-    //       m_pivotTeleop.getCushionMotorPower());
-    //   SmartDashboard.putNumber("JoystickPivotTotalValue",
-    //       m_pivotTeleop.getTotalMotorCommanded());
-    //   m_timer.clear();
-    // }
+    if (m_timer.isReady()) {
+      SmartDashboard.putNumber("PotRaw", m_robotContainer.getExtension().getPot());
+      SmartDashboard.putNumber("PotClamped",
+          m_robotContainer.getExtension().getClampedPot());
+      SmartDashboard.putBoolean("IsFullyExtended",
+          m_robotContainer.getExtension().isFullyExtended());
+      SmartDashboard.putBoolean("IsFullyRetracted",
+          m_robotContainer.getExtension().isFullyRetracted());
+      SmartDashboard.putNumber("ExtensionRevs",
+          m_robotContainer.getExtension().getEncoder().getPosition());
+      SmartDashboard.putBoolean("StillSpooledIn",
+          m_robotContainer.getExtension().stillSpooledIn());
+      SmartDashboard.putNumber("CalibratedEncoderExtension",
+          m_robotContainer.getExtension().getCalibratedEncoderPosition());
+      SmartDashboard.putNumber("Position (Revs)",
+          m_robotContainer.getPivot().getEncoder().getPosition());
+      SmartDashboard.putNumber("Velocity (RPM)",
+          m_robotContainer.getPivot().getEncoder().getVelocity());
+      SmartDashboard.putNumber("Current output",
+          m_robotContainer.getPivot().getMotorOutput());
+      SmartDashboard.putNumber("FrontLeftEncoderDistanceMeters",
+          m_robotContainer.getDrivetrain().getFrontLeftDistanceMeters());
+      SmartDashboard.putNumber("BackRightEncoderDistanceMeters",
+          m_robotContainer.getDrivetrain().getBackRightDistanceMeters());
+      SmartDashboard.putNumber("GyroPitchDegrees",
+          m_robotContainer.getDrivetrain().getGyroPitchAngleDegrees());
+      SmartDashboard.putNumber("CommandedPivotGravityAssist",
+          m_pivotTeleop.getCommandedValue());
+      SmartDashboard.putBoolean("Faulted", m_pivotTeleop.getFaulted());
+      SmartDashboard.putNumber("CushionMotorValue",
+          m_pivotTeleop.getCushionMotorPower());
+      SmartDashboard.putNumber("JoystickPivotTotalValue",
+          m_pivotTeleop.getTotalMotorCommanded());
+      SmartDashboard.putNumber("RecentError", m_robotContainer.getPDPivotController().getError());
+      SmartDashboard.putNumber("RecentPrevError", m_robotContainer.getPDPivotController().getPreviousError());
+      SmartDashboard.putNumber("RecentDeriv", m_robotContainer.getPDPivotController().getRecentDerivative());
+      SmartDashboard.putNumber("RecentFeed", m_robotContainer.getPDPivotController().getRecentFeedforward());
+      SmartDashboard.putNumber("RecentSetpoint", m_robotContainer.getPDPivotController().getRPMSetpoint());
+      SmartDashboard.putNumber("RecentMotorCommand", m_robotContainer.getPDPivotController().getRecentPIDCommand());
+      SmartDashboard.putNumber("RecentDT", m_robotContainer.getPDPivotController().getDt());
+      SmartDashboard.putNumber("DegreesFromZAxis", m_robotContainer.getPDPivotController().degreesFromZAxis(m_robotContainer.getPivot().getEncoder().getPosition()));
+      m_timer.clear();
+    }
   }
 
   @Override

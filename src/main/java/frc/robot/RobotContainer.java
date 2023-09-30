@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Pivot_Commands.*;
-import frc.robot.physics.PivotController;
+import frc.robot.physics.PDPivotController;
 import frc.robot.commands.Clamp_Commands.*;
 import frc.robot.commands.Drive_Commands.ToggleSlowMode;
 import frc.robot.commands.Extension_Commands.*;
@@ -33,7 +33,7 @@ public class RobotContainer {
   private final Pivot m_Pivot = new Pivot();
   private final Extension m_Extension = new Extension();
   private final Clamp m_Clamp = new Clamp();
-  private final PivotController m_PivotController;
+  private final PDPivotController m_PDPivotController;
   private final DeployableWheels m_DeployableWheels = new DeployableWheels();
 
   // Driving joysticks
@@ -46,7 +46,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    m_PivotController = new PivotController(m_Pivot);
+    m_PDPivotController = new PDPivotController(m_Pivot);
   }
 
   public Drivetrain getDrivetrain() {
@@ -57,8 +57,8 @@ public class RobotContainer {
     return m_Pivot;
   }
 
-  public PivotController getPivotController() {
-    return m_PivotController;
+  public PDPivotController getPDPivotController() {
+    return m_PDPivotController;
   }
 
   public Extension getExtension() {
